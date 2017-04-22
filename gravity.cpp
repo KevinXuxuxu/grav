@@ -57,74 +57,62 @@ Force calForce(const BodyX &a, BodyX b)
     return f;
 }
 Vect dv[N], dx[N];
-void iterate(BodyX *a)
-{
+// void iterate(BodyX *a)
+// {
     
-    cout << "****************iterate**********************\n";
-    struct timeval t_start;
-    gettimeofday(&t_start, NULL);
+//     Vect F;
+//     int i, j;
+   
+//     for(i=0;i<n;i++)
+//     {
+//         F = Vect(0, 0, 0);
+//         double r,r2;
+//         //cout<<"1\n";
+//         for(j=0;j<n;j++)
+//         {
+//             if(j!=i)
+//             {
+//                 // cout<<"FUCK!\n";
+//                 r2 = (a[i].c - a[j].c) & (a[i].c - a[j].c);
+//                 r = (a[i].c - a[j].c).abs();
+//                 double Ff = G * a[i].m * a[j].m / r2;
+//                 F = F + (a[j].c - a[i].c) * Ff / r;
+//             }
+//         }
+//         dv[i] = (F * dt / a[i].m);
+//         dx[i] = (a[i].v * dt);
+//     }
 
-    double time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
-    Vect F;
-    int i, j;
-    /* Cal gravity */
-    for(i=0;i<n;i++)
-    {
-        F = Vect(0, 0, 0);
-        double r,r2;
-        //cout<<"1\n";
-        for(j=0;j<n;j++)
-        {
-            if(j!=i)
-            {
-                // cout<<"FUCK!\n";
-                r2 = (a[i].c - a[j].c) & (a[i].c - a[j].c);
-                r = (a[i].c - a[j].c).abs();
-                double Ff = G * a[i].m * a[j].m / r2;
-                F = F + (a[j].c - a[i].c) * Ff / r;
-            }
-        }
-        dv[i] = (F * dt / a[i].m);
-        dx[i] = (a[i].v * dt);
-    }
-    /* End of Cal gravity */
+//     Vect vit, vjt;
+//     for (i = 0; i < n; i++)
+//         for (j = i + 1; j < n; j++)
+//         {
+//             if (((a[i].c + dx[i]) - (a[j].c + dx[j])).abs() <= a[i].size + a[j].size)
+//             {
+//                 collide(a[i], a[j], vit, vjt);
+//                 a[i].v = vit;
+//                 a[j].v = vjt;
+//                 dx[i] = Vect(0.0);
+//                 dx[j] = Vect(0.0);
+//                 dv[i] = Vect(0.0);
+//                 dv[j] = Vect(0.0);
+//             }
+//         }
+//     /* End of Cal collide */
+//     struct timeval t_after_coll;
+//     gettimeofday(&t_after_coll, NULL);
 
-    struct timeval t_after_grav;
-    gettimeofday(&t_after_grav, NULL);
-
-    double time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
+//     double time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
     
-    /* Cal collide */
-    Vect vit, vjt;
-    for (i = 0; i < n; i++)
-        for (j = i + 1; j < n; j++)
-        {
-            if (((a[i].c + dx[i]) - (a[j].c + dx[j])).abs() <= a[i].size + a[j].size)
-            {
-                collide(a[i], a[j], vit, vjt);
-                a[i].v = vit;
-                a[j].v = vjt;
-                dx[i] = Vect(0.0);
-                dx[j] = Vect(0.0);
-                dv[i] = Vect(0.0);
-                dv[j] = Vect(0.0);
-            }
-        }
-    /* End of Cal collide */
-    struct timeval t_after_coll;
-    gettimeofday(&t_after_coll, NULL);
+//     cout << "calculate gravity: %fms\n" % (time_after_grav - time_start);
+//     cout << "calculate collide: %fms\n" % (time_after_coll - time_after_grav);
 
-    double time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
-    
-    cout << "calculate gravity: " + (time_after_grav - time_start) + "ms\n";
-    cout << "calculate collide: " + (time_after_coll - time_after_grav) + "ms\n";
-
-    for (i = 0; i < n; i++)
-    {
-        a[i].c += dx[i];
-        a[i].v += dv[i];
-    }
-}
+//     for (i = 0; i < n; i++)
+//     {
+//         a[i].c += dx[i];
+//         a[i].v += dv[i];
+//     }
+// }
 
 void collide(const BodyX &a, const BodyX &b, Vect &vat, Vect &vbt)
 {
@@ -167,7 +155,14 @@ Vect caldx(BodyX b, BodyX a) //impulse of a on b
 }
 void iterate2(BodyX *a)
 {
+    cout << "****************iterate**********************\n";
+    struct timeval t_start;
+    gettimeofday(&t_start, NULL);
+
+    double time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
+
     int i, j;
+ /* Cal gravity */
     for (i = 0; i < n; i++)
     {
         dv[i] = Vect(0, 0, 0);
@@ -181,6 +176,14 @@ void iterate2(BodyX *a)
             }
         }
     }
+    /* End of Cal gravity */
+
+    struct timeval t_after_grav;
+    gettimeofday(&t_after_grav, NULL);
+
+    double time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
+    
+    /* Cal collide */
     
     Vect vit, vjt;
     for (i = 0; i < n; i++)
@@ -197,7 +200,15 @@ void iterate2(BodyX *a)
                 dv[j] = Vect(0.0);
             }
         }
+     /* End of Cal collide */
+    struct timeval t_after_coll;
+    gettimeofday(&t_after_coll, NULL);
+
+    double time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
     
+    cout << "calculate gravity: %fms\n" % (time_after_grav - time_start);
+    cout << "calculate collide: %fms\n" % (time_after_coll - time_after_grav);
+
     for (i = 0; i < n; i++)
     {
         a[i].c += dx[i];
