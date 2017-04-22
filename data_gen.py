@@ -7,16 +7,16 @@ def dist(x1, y1, z1, x2, y2, z2):
     return ((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)**0.5
 
 def main():
-    fout = open("/Users/kevinxu/Library/Developer/Xcode/DerivedData/grav-hieymrcthnjomncrbwehgbxyeqcd/Build/Products/Debug/config.in", 'w')
-    n = 100
+    fout = open("config.in",'w')
+    n = 1000
     duration = 160000
     fout.write("Number of objects: %d\nDuration: %d (s)\n\n" %(n, duration))
     bodys = []
-    V = 0.0001
-    P = 7
+    V = 0.1
+    P = 1000
     for i in range(n):
-        x, y, z = get_rand(P), get_rand(P), 0.
-        vx, vy, vz = get_rand(V), get_rand(V), 0.
+        x, y, z = get_rand(P), get_rand(P), get_rand(P)
+        vx, vy, vz = get_rand(V), get_rand(V), get_rand(V)
         m = 0.2 * random()
         r = 0.2 * (m ** (1/3.))
         flag = False

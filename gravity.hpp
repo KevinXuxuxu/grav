@@ -15,7 +15,7 @@
 #include "body.hpp"
 
 const double G = 1.73205;
-const int N = 100;
+const int N = 100000;
 const double OcttreeThreshold = 0.1;
 
 extern int n;
