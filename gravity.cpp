@@ -15,6 +15,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <algorithm>
+#include <sys/time.h>
+
 
 #include "gravity.hpp"
 
@@ -57,8 +59,15 @@ Force calForce(const BodyX &a, BodyX b)
 Vect dv[N], dx[N];
 void iterate(BodyX *a)
 {
+    
+    cout << "****************iterate**********************\n";
+    struct timeval t_start;
+    gettimeofday(&t_start, NULL);
+
+    double time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
     Vect F;
     int i, j;
+    /* Cal gravity */
     for(i=0;i<n;i++)
     {
         F = Vect(0, 0, 0);
@@ -78,7 +87,14 @@ void iterate(BodyX *a)
         dv[i] = (F * dt / a[i].m);
         dx[i] = (a[i].v * dt);
     }
+    /* End of Cal gravity */
+
+    struct timeval t_after_grav;
+    gettimeofday(&t_after_grav, NULL);
+
+    double time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
     
+    /* Cal collide */
     Vect vit, vjt;
     for (i = 0; i < n; i++)
         for (j = i + 1; j < n; j++)
@@ -94,7 +110,15 @@ void iterate(BodyX *a)
                 dv[j] = Vect(0.0);
             }
         }
+    /* End of Cal collide */
+    struct timeval t_after_coll;
+    gettimeofday(&t_after_coll, NULL);
+
+    double time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
     
+    cout << "calculate gravity: " + (time_after_grav - time_start) + "ms\n";
+    cout << "calculate collide: " + (time_after_coll - time_after_grav) + "ms\n";
+
     for (i = 0; i < n; i++)
     {
         a[i].c += dx[i];
