@@ -206,8 +206,8 @@ void iterate2(BodyX *a)
 
     double time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
     
-    cout << "calculate gravity: %fms\n" % (time_after_grav - time_start);
-    cout << "calculate collide: %fms\n" % (time_after_coll - time_after_grav);
+    cout << "calculate gravity: " << (time_after_grav - time_start) << "ms\n";
+    cout << "calculate collide: " << (time_after_coll - time_after_grav) << "ms\n";
 
     for (i = 0; i < n; i++)
     {
