@@ -8,12 +8,12 @@ def dist(x1, y1, z1, x2, y2, z2):
 
 def main():
     fout = open("/Users/kevinxu/Library/Developer/Xcode/DerivedData/grav-hieymrcthnjomncrbwehgbxyeqcd/Build/Products/Debug/config.in", 'w')
-    n = 10
+    n = 100
     duration = 160000
     fout.write("Number of objects: %d\nDuration: %d (s)\n\n" %(n, duration))
     bodys = []
     V = 0.0001
-    P = 5
+    P = 7
     for i in range(n):
         x, y, z = get_rand(P), get_rand(P), 0.
         vx, vy, vz = get_rand(V), get_rand(V), 0.
