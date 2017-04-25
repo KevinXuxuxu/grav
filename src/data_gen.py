@@ -1,4 +1,5 @@
 from random import random
+import sys
 
 def get_rand(r):
     return random() * 2 * r - r
@@ -8,12 +9,13 @@ def dist(x1, y1, z1, x2, y2, z2):
 
 def main():
     fout = open("config.in",'w')
-    n = 1000
+    a = float(sys.argv[1])
+    n = int(1000 * a)
     duration = 160000
     fout.write("Number of objects: %d\nDuration: %d (s)\n\n" %(n, duration))
     bodys = []
     V = 0.1
-    P = 1000
+    P = 10 * (a ** 0.333)
     for i in range(n):
         x, y, z = get_rand(P), get_rand(P), get_rand(P)
         vx, vy, vz = get_rand(V), get_rand(V), get_rand(V)
