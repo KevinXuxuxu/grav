@@ -20,7 +20,7 @@
 const int SamplingTimer = 1;
 const int samplingrate = 40; //in milliseconds
 const int iterationnum = 10;
-const double PI = 3.14159265358979323846264338327950288419716939937510;
+const float	 PI = 3.14159265358979323846264338327950288419716939937510;
 
 int main(int argc, const char * argv[]) {
     input(body);

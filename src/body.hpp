@@ -13,7 +13,7 @@
 
 #include "vect.h"
 
-const double dt = 0.005;
+const float	 dt = 0.005;
 
 struct Force
 {
@@ -25,18 +25,18 @@ struct Force
     Force(Vect _dx, Vect _dv);
     Force operator +(Force b) const;
     Force operator +=(Force);
-    Force operator *(double k) const;
-    friend Force operator *(double k, Force v);
-    Force operator /(double k) const;
+    Force operator *(float	 k) const;
+    friend Force operator *(float	 k, Force v);
+    Force operator /(float	 k) const;
 };
 struct BodyX
 {
     Vect c;//coordinates
     Vect v;//velocity
-    double m; //mass
-    double size;
+    float	 m; //mass
+    float	 size;
     BodyX();
-    BodyX(Vect _c, Vect _v, double _m);
+    BodyX(Vect _c, Vect _v, float	 _m);
     void apply(Force f);
     BodyX ifApply(Force f);
 };
