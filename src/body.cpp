@@ -33,22 +33,22 @@ Force Force::operator +=(Force b)
         *this = b;
     return *this;
 }
-Force Force::operator *(double k) const
+Force Force::operator *(float	 k) const
 {
     return Force(f * k);
 }
-Force operator *(double k, Force f)
+Force operator *(float	 k, Force f)
 {
     return Force(f.f * k);
 }
-Force Force::operator /(double k) const
+Force Force::operator /(float	 k) const
 {
     return Force(f / k);
 }
 
 BodyX::BodyX()
 {}
-BodyX::BodyX(Vect _c, Vect _v, double _m)
+BodyX::BodyX(Vect _c, Vect _v, float	 _m)
 :c(_c), v(_v), m(_m)
 {}
 void BodyX::apply(Force f)

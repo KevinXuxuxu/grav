@@ -1,0 +1,21 @@
+MAINOBJ = gravity.o body.o main_nogl.o
+OPT = -g -O2 -fopenmp –lm –msse3
+# CPC = mpigcc
+
+main: $(MAINOBJ)
+	gcc $(MAINOBJ) -lGL -lglut -o main $(OPT)
+	
+main.o: main_nogl.cpp
+	gcc main_nogl.cpp -c $(OPT)
+
+gravity.o: gravity.cpp
+	gcc gravity.cpp -c $(OPT)
+
+body.o: body.cpp
+	gcc body.cpp -c $(OPT)
+
+#vect.o: vect.h
+#	gcc vect.h -c $(OPT)
+
+clean:
+	-rm $(MAINOBJ)

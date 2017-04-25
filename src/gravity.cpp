@@ -38,7 +38,7 @@ void input(BodyX *a)
     char xx[N];
     fin>>xx>>xx>>xx>>n;
     fin>>xx>>T>>xx;
-    printf("T: %d\nn: %d", T, n);
+    printf("T: %lld\nn: %d", T, n);
     for(int i=0;i<n;i++)
     {
         fin>>a[i].c.x>>a[i].c.y>>a[i].c.z>>a[i].v.x>>a[i].v.y>>a[i].v.z>>a[i].m;
@@ -48,8 +48,8 @@ void input(BodyX *a)
 Force calForce(const BodyX &a, BodyX b)
 {
     Force f;
-    double r2 = (a.c - b.c) & (a.c - b.c);
-    double r = (a.c - b.c).abs();
+    float	 r2 = (a.c - b.c) & (a.c - b.c);
+    float	 r = (a.c - b.c).abs();
     if (r == 0.0)
         return Force(0);
     f = (b.c - a.c) / r * (G * a.m * b.m / r2);
@@ -66,7 +66,7 @@ Vect dv[N], dx[N];
 //     for(i=0;i<n;i++)
 //     {
 //         F = Vect(0, 0, 0);
-//         double r,r2;
+//         float	 r,r2;
 //         //cout<<"1\n";
 //         for(j=0;j<n;j++)
 //         {
@@ -75,7 +75,7 @@ Vect dv[N], dx[N];
 //                 // cout<<"FUCK!\n";
 //                 r2 = (a[i].c - a[j].c) & (a[i].c - a[j].c);
 //                 r = (a[i].c - a[j].c).abs();
-//                 double Ff = G * a[i].m * a[j].m / r2;
+//                 float	 Ff = G * a[i].m * a[j].m / r2;
 //                 F = F + (a[j].c - a[i].c) * Ff / r;
 //             }
 //         }
@@ -102,7 +102,7 @@ Vect dv[N], dx[N];
 //     struct timeval t_after_coll;
 //     gettimeofday(&t_after_coll, NULL);
 
-//     double time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
+//     float	 time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
     
 //     cout << "calculate gravity: %fms\n" % (time_after_grav - time_start);
 //     cout << "calculate collide: %fms\n" % (time_after_coll - time_after_grav);
@@ -118,13 +118,13 @@ void collide(const BodyX &a, const BodyX &b, Vect &vat, Vect &vbt)
 {
     Vect e = a.c - b.c;
     e = e / e.abs();
-    double A, B;
+    float	 A, B;
     A = a.v & e;
     B = b.v & e;
     Vect ar, br;
     ar = a.v - A * e;
     br = b.v - B * e;
-    double Al, Bl;
+    float	 Al, Bl;
     Al = (A * (a.m - b.m) + 2 * b.m * B) / (a.m + b.m);
     Bl = (B * (b.m - a.m) + 2 * a.m * A) / (a.m + b.m);
     vat = ar + Al * e;
@@ -135,7 +135,7 @@ Vect caldv(BodyX b, BodyX a) //impulse of a on b
 {
     Vect dx = a.c - b.c;
     Vect dv = a.v - b.v;
-    double r = dx.abs();
+    float	 r = dx.abs();
     return G * a.m * (
                       dx / (r * r * r) * dt +
                       1.0 / 2.0 * dv / (r * r * r) * dt * dt +
@@ -146,7 +146,7 @@ Vect caldx(BodyX b, BodyX a) //impulse of a on b
 {
     Vect dx = a.c - b.c;
     Vect dv = a.v - b.v;
-    double r = dx.abs();
+    float	 r = dx.abs();
     return G * a.m * (
                       1.0 / 2.0 * dx / (r * r * r) * dt * dt +
                       1.0 / 6.0 * dv / (r * r * r) * dt * dt * dt +
@@ -159,7 +159,7 @@ void iterate2(BodyX *a)
     struct timeval t_start;
     gettimeofday(&t_start, NULL);
 
-    double time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
+    double	 time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
 
     int i, j;
  /* Cal gravity */
@@ -181,7 +181,7 @@ void iterate2(BodyX *a)
     struct timeval t_after_grav;
     gettimeofday(&t_after_grav, NULL);
 
-    double time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
+    double	 time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
     
     /* Cal collide */
     
@@ -204,7 +204,7 @@ void iterate2(BodyX *a)
     struct timeval t_after_coll;
     gettimeofday(&t_after_coll, NULL);
 
-    double time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
+    double	 time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
     
     cout << "calculate gravity: " << (time_after_grav - time_start) << "ms\n";
     cout << "calculate collide: " << (time_after_coll - time_after_grav) << "ms\n";

@@ -11,21 +11,22 @@
 
 
 #include <cmath>
+#include <pmmintrin.h>
 
 struct Vect
 {
     Vect()
     {}
-    Vect(double _x, double _y = 0.0, double _z = 0.0)
+    Vect(float	 _x, float	 _y = 0.0, float	 _z = 0.0)
     :x(_x), y(_y), z(_z)
     {}
     union
     {
         struct
         {
-            double x, y, z;
+            float	 x, y, z;
         };
-        double c[3];
+        float	 c[3];
     };
     Vect operator +(Vect b) const
     {
@@ -42,23 +43,23 @@ struct Vect
     {
         return Vect(x - b.x, y - b.y, z - b.z);
     }
-    Vect operator *(double k) const
+    Vect operator *(float	 k) const
     {
         return Vect(x * k, y * k, z * k);
     }
-    friend Vect operator *(double k, Vect v)
+    friend Vect operator *(float	 k, Vect v)
     {
         return Vect(v.x * k, v.y * k, v.z * k);
     }
-    Vect operator /(double k) const
+    Vect operator /(float	 k) const
     {
         return Vect(x / k, y / k, z / k);
     }
-    double operator &(Vect b) const
+    float	 operator &(Vect b) const
     {
         return x * b.x + y * b.y + z * b.z;
     }
-    double abs() const
+    float	 abs() const
     {
         return sqrt(x * x + y * y + z * z);
     }
@@ -67,7 +68,7 @@ struct Vect
         return *this / abs();
     }
 };
-//double dotProduct(Vect a, Vect b)
+//float	 dotProduct(Vect a, Vect b)
 //{
 //    return a.x * b.x + a.y * b.y + a.z * b.z;
 //}

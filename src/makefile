@@ -1,21 +1,23 @@
-MAINOBJ = gravity.o body.o main_nogl.o
-OPT = -g -O2 -fopenmp
-CPC = mpic++
+PROJ = main
+CC = g++
 
-main: $(MAINOBJ)
-	c++ $(MAINOBJ) -lGL -lglut -o main $(OPT)
-	
-main.o: main_nogl.cpp
-	c++ main_nogl.cpp -c $(OPT)
+CFLAGS = -c -g -Wall -I/opt/local/include -I$(HOME)/cppunit/include
+LDFLAGS = -L/opt/local/lib -L$(HOME)/cppunit/lib
+LIBS = -lcppunit -ldl
+OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
+OMPFLAGS = -fopenmp
+SIMDFLAGS = -msse2 -msse3 -O2 -lm
 
-gravity.o: gravity.cpp
-	c++ gravity.cpp -c $(OPT)
+all: $(PROJ)
 
-body.o: body.cpp
-	c++ body.cpp -c $(OPT)
+$(PROJ): $(OBJS)
+		$(CC) $(OMPFLAGS) $(LDFLAGS) $^ -o $@ $(LIBS)
 
-#vect.o: vect.h
-#	c++ vect.h -c $(OPT)
+%.o : %.cpp
+		$(CC) $(CFLAGS) $< -o $@ $(SIMDFLAGS) $(OMPFLAGS)
+
+%.o : %.cpp %.h
+		$(CC) $(CFLAGS) $< -o $@ $(SIMDFLAGS)
 
 clean:
-	-rm $(MAINOBJ)
+		rm -f $(PROJ) $(OBJS) *.xml
