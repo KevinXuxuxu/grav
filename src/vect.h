@@ -11,6 +11,7 @@
 
 
 #include <cmath>
+#include <pmmintrin.h>
 
 struct Vect
 {

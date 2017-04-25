@@ -38,7 +38,7 @@ void input(BodyX *a)
     char xx[N];
     fin>>xx>>xx>>xx>>n;
     fin>>xx>>T>>xx;
-    printf("T: %d\nn: %d", T, n);
+    printf("T: %lld\nn: %d", T, n);
     for(int i=0;i<n;i++)
     {
         fin>>a[i].c.x>>a[i].c.y>>a[i].c.z>>a[i].v.x>>a[i].v.y>>a[i].v.z>>a[i].m;
