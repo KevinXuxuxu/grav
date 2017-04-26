@@ -52,8 +52,11 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
     for(int i=0;i<n;i++)
     {   
         float tmp;
+
         fin>>tmp;
+        printf("tmp=%f\n", tmp);
         (*cs)[i].x = tmp;
+        printf("cx=%f\n", (*cs)[i].x);
         fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>*ms[i];
         *sizes[i] = 0.2 * pow(*ms[i], 1.0/3.0);
     }
