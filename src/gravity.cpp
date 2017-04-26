@@ -91,8 +91,8 @@ void collide(const Vect &a_c, const Vect &a_v, float a_m,
     vat = ar + Al * e;
     vbt = br + Bl * e;
 }
-
-Vect caldv(const Vect &a_c,const  Vect &a_v,const  float a_m,const Vect &b_c, const Vect &b_v) //impulse of a on b
+/* impulse of a on b */
+Vect caldv(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m)
 {
     Vect dx = a_c - b_c;
     Vect dv = a_v - b_v;
@@ -103,7 +103,8 @@ Vect caldv(const Vect &a_c,const  Vect &a_v,const  float a_m,const Vect &b_c, co
                       3.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt
                       );
 }
-Vect caldx(const Vect &a_c,const  Vect &a_v,const  float a_m,const Vect &b_c, const Vect &b_v) //impulse of a on b
+/* impulse of a on b */
+Vect caldx(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m) 
 {
     Vect dx = a_c - b_c;
     Vect dv = a_v - b_v;
