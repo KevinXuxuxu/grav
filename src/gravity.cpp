@@ -34,7 +34,7 @@ float* ms; //mass
 float* sizes;
 Vect *dv, *dx;
 
-void input(Vect* cs, Vect* vs, float* ms, float* sizes)
+void input(Vect** cs, Vect** vs, float** ms, float** sizes)
 {
     ifstream fin("config.in");
     char xx[N];
@@ -47,12 +47,14 @@ void input(Vect* cs, Vect* vs, float* ms, float* sizes)
     sizes = (float *) malloc(sizeof(float) * n);
     dv = (Vect *) malloc(sizeof(Vect) * n);
     dx = (Vect *) malloc(sizeof(Vect) * n);
+
     assert(cs != NULL && vs != NULL && ms != NULL && sizes != NULL && dv != NULL && dx != NULL);
     for(int i=0;i<n;i++)
     {
         fin>>cs[i].x>>cs[i].y>>cs[i].z>>vs[i].x>>vs[i].y>>vs[i].z>>ms[i];
         sizes[i] = 0.2 * pow(ms[i], 1.0/3.0);
     }
+    printf("cs[0]=%f", cs[0].x);
 }
 
 
@@ -98,7 +100,7 @@ Vect caldx(Vect b_c, Vect b_v, float a_m, Vect a_c, Vect a_v) //impulse of a on 
                       1.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt * dt
                       );
 }
-void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes)
+void iterate2(Vect** cs, Vect** vs, float** ms, float** sizes)
 {
     cout << "****************iterate**********************\n";
     struct timeval t_start;

@@ -23,13 +23,13 @@ const int iterationnum = 10;
 const float	 PI = 3.14159265358979323846264338327950288419716939937510;
 
 int main(int argc, const char * argv[]) {
-    input(cs, vs, ms, sizes);
+    input(&cs, &vs, &ms, &sizes);
     int n = 100000;
     while(n>0) {
-        iterate2(cs, vs, ms, sizes);
+        iterate2(&cs, &vs, &ms, &sizes);
         n--;
     }
-    destory()
+    destory();
     return 0;
 }
 
