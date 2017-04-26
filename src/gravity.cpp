@@ -14,6 +14,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <algorithm>
 #include <sys/time.h>
 
@@ -25,53 +26,67 @@ using namespace std;
 int n;
 long long T;
 
-void input(BodyX *a)
+// BodyX body[N];
+Vect* cs; //coordinates
+Vect* vs; //velocity
+float* ms; //mass
+float* sizes;
+
+
+void input(Vect* cs, Vect* vs, float* ms, float* sizes)
 {
     ifstream fin("config.in");
     char xx[N];
     fin>>xx>>xx>>xx>>n;
     fin>>xx>>T>>xx;
     printf("T: %lld\nn: %d", T, n);
+    cs = (Vect *) malloc(sizeof(Vect) * n);
+    vs = (Vect *) malloc(sizeof(Vect) * n);
+    ms = (float *) malloc(sizeof(float) * n);
+    sizes = (float *) malloc(sizeof(float) * n);
+    assert(cs != NULL && vs != NULL && ms != NULL && sizes != NULL);
     for(int i=0;i<n;i++)
     {
-        fin>>a[i].c.x>>a[i].c.y>>a[i].c.z>>a[i].v.x>>a[i].v.y>>a[i].v.z>>a[i].m;
-        a[i].size = 0.2 * pow(a[i].m, 1.0/3.0);
+        fin>>cs[i].x>>cs[i].y>>cs[i].z>>vs[i].x>>vs[i].y>>vs[i].z>>ms[i];
+        sizes[i] = 0.2 * pow(a[i].m, 1.0/3.0);
     }
 }
-Force calForce(const BodyX &a, BodyX b)
-{
-    Force f;
-    float	 r2 = (a.c - b.c) & (a.c - b.c);
-    float	 r = (a.c - b.c).abs();
-    if (r == 0.0)
-        return Force(0);
-    f = (b.c - a.c) / r * (G * a.m * b.m / r2);
-    //printf("Force (%.2lf, %.2lf, %.2lf)\n", f.x, f.y, f.z);
-    return f;
-}
+// Force calForce(const BodyX &a, BodyX b)
+// {
+//     Force f;
+//     float	 r2 = (a.c - b.c) & (a.c - b.c);
+//     float	 r = (a.c - b.c).abs();
+//     if (r == 0.0)
+//         return Force(0);
+//     f = (b.c - a.c) / r * (G * a.m * b.m / r2);
+//     //printf("Force (%.2lf, %.2lf, %.2lf)\n", f.x, f.y, f.z);
+//     return f;
+// }
 Vect dv[N], dx[N];
 
-void collide(const BodyX &a, const BodyX &b, Vect &vat, Vect &vbt)
+void collide(const Vect a_c, const Vect a_v, const Vect a_m, 
+    const Vect b_c, const Vect b_v, const Vect b_m, 
+    Vect &vat, Vect &vbt)
 {
-    Vect e = a.c - b.c;
+    Vect e = a_c - b_c;
     e = e / e.abs();
     float	 A, B;
-    A = a.v & e;
-    B = b.v & e;
+    A = a_v & e;
+    B = b_v & e;
     Vect ar, br;
-    ar = a.v - A * e;
-    br = b.v - B * e;
+    ar = a_v - A * e;
+    br = b_v - B * e;
     float	 Al, Bl;
-    Al = (A * (a.m - b.m) + 2 * b.m * B) / (a.m + b.m);
-    Bl = (B * (b.m - a.m) + 2 * a.m * A) / (a.m + b.m);
+    Al = (A * (a_m - b_m) + 2 * b_m * B) / (a_m + b_m);
+    Bl = (B * (b_m - a_m) + 2 * a_m * A) / (a_m + b_m);
     vat = ar + Al * e;
     vbt = br + Bl * e;
 }
 
-Vect caldv(BodyX b, BodyX a) //impulse of a on b
+Vect caldv(Vect a_c, Vect a_v, Vect b_c, Vect b_v) //impulse of a on b
 {
-    Vect dx = a.c - b.c;
-    Vect dv = a.v - b.v;
+    Vect dx = a_c - b_c;
+    Vect dv = a_v - b_v;
     float	 r = dx.abs();
     return G * a.m * (
                       dx / (r * r * r) * dt +
@@ -79,7 +94,7 @@ Vect caldv(BodyX b, BodyX a) //impulse of a on b
                       3.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt
                       );
 }
-Vect caldx(BodyX b, BodyX a) //impulse of a on b
+Vect caldx(Vect b_c, Vect b_v, Vect a_c, Vect a_v) //impulse of a on b
 {
     Vect dx = a.c - b.c;
     Vect dv = a.v - b.v;
@@ -90,7 +105,7 @@ Vect caldx(BodyX b, BodyX a) //impulse of a on b
                       1.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt * dt
                       );
 }
-void iterate2(BodyX *a)
+void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes)
 {
     cout << "****************iterate**********************\n";
     struct timeval t_start;
@@ -99,7 +114,7 @@ void iterate2(BodyX *a)
     double	 time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
 
     int i, j;
- /* Cal gravity */
+    /* Cal gravity */
     for (i = 0; i < n; i++)
     {
         dv[i] = Vect(0, 0, 0);
@@ -108,8 +123,8 @@ void iterate2(BodyX *a)
         {
             if(j!=i)
             {
-                dv[i] += caldv(a[i], a[j]);
-                dx[i] += a[i].v * dt + caldx(a[i], a[j]);
+                dv[i] += caldv(cs[i], vs[i], cs[j], vs[j]);
+                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j]);
             }
         }
     }
@@ -126,11 +141,11 @@ void iterate2(BodyX *a)
     for (i = 0; i < n; i++)
         for (j = i + 1; j < n; j++)
         {
-            if (((a[i].c + dx[i]) - (a[j].c + dx[j])).abs() <= a[i].size + a[j].size)
+            if (((cs[i] + dx[i]) - (cs[j] + dx[j])).abs() <= sizes[i] + sizes[j])
             {
-                collide(a[i], a[j], vit, vjt);
-                a[i].v = vit;
-                a[j].v = vjt;
+                collide(cs[i], vs[i], ms[i], cs[j], vs[j], ms[j], vit, vjt);
+                vs[i] = vit;
+                vs[j] = vjt;
                 dx[i] = Vect(0.0);
                 dx[j] = Vect(0.0);
                 dv[i] = Vect(0.0);
@@ -143,15 +158,21 @@ void iterate2(BodyX *a)
 
     double	 time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
     
-    cout << "calculate gravity: " << (time_after_grav - time_start) << "ms\n";
-    cout << "calculate collide: " << (time_after_coll - time_after_grav) << "ms\n";
+    printf("calculate gravity: %f ms\n", (time_after_grav - time_start));
+    printf("calculate collide: %f ms\n", (time_after_coll - time_after_grav));
 
     for (i = 0; i < n; i++)
     {
-        a[i].c += dx[i];
-        a[i].v += dv[i];
+        cs[i] += dx[i];
+        vs[i] += dv[i];
     }
 }
 
+void destory(){
+    if(cs != NULL) free(cs);
+    if(vs != NULL) free(vs);
+    if(ms != NULL) free(ms);
+    if(sizes != NULL) free(sizes);
+}
 
 #endif

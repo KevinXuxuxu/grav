@@ -23,19 +23,22 @@ extern long long T;
 
 // extern BodyX body[N];
 
-//int n;
-//long long T;
-//
-//BodyX body[N];
+extern Vect* cs; //coordinates
+extern Vect* vs; //velocity
+extern float* ms; //mass
+extern float* sizes;
 
 
-extern void input(BodyX *);
-extern Force calForce(const BodyX &a, BodyX b);
-extern void iterate(BodyX *a);
-extern Vect caldv(BodyX b, BodyX a); //impulse of a on b
-extern Vect caldx(BodyX b, BodyX a); //impulse of a on b
-extern void collide(const BodyX &a, const BodyX &b, Vect &vat, Vect &vbt);
-extern void iterate2(BodyX *a);
+extern void input(Vect* cs, Vect* vs, float* ms, float* sizes);
+// extern Force calForce(const BodyX &a, BodyX b);
+// extern void iterate(BodyX *a);
+extern Vect caldv(Vect a_c, Vect a_v, Vect b_c, Vect b_v); //impulse of a on b
+extern Vect caldx(Vect b_c, Vect b_v, Vect a_c, Vect a_v); //impulse of a on b
+extern void collide(const Vect a_c, const Vect a_v, const Vect a_m, 
+    const Vect b_c, const Vect b_v, const Vect b_m, 
+    Vect &vat, Vect &vbt);
+extern void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes);
+extern void destory();
 //extern void iterateOcttree(BodyX *body);
 
 //#include "gravity.cpp"
