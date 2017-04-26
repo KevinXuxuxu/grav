@@ -27,6 +27,8 @@
 
 using namespace std;
 
+#define NUM_THREADS 8
+
 int n;
 long long T;
 
@@ -57,62 +59,6 @@ Force calForce(const BodyX &a, BodyX b)
     return f;
 }
 Vect dv[N], dx[N];
-// void iterate(BodyX *a)
-// {
-    
-//     Vect F;
-//     int i, j;
-   
-//     for(i=0;i<n;i++)
-//     {
-//         F = Vect(0, 0, 0);
-//         float	 r,r2;
-//         //cout<<"1\n";
-//         for(j=0;j<n;j++)
-//         {
-//             if(j!=i)
-//             {
-//                 // cout<<"FUCK!\n";
-//                 r2 = (a[i].c - a[j].c) & (a[i].c - a[j].c);
-//                 r = (a[i].c - a[j].c).abs();
-//                 float	 Ff = G * a[i].m * a[j].m / r2;
-//                 F = F + (a[j].c - a[i].c) * Ff / r;
-//             }
-//         }
-//         dv[i] = (F * dt / a[i].m);
-//         dx[i] = (a[i].v * dt);
-//     }
-
-//     Vect vit, vjt;
-//     for (i = 0; i < n; i++)
-//         for (j = i + 1; j < n; j++)
-//         {
-//             if (((a[i].c + dx[i]) - (a[j].c + dx[j])).abs() <= a[i].size + a[j].size)
-//             {
-//                 collide(a[i], a[j], vit, vjt);
-//                 a[i].v = vit;
-//                 a[j].v = vjt;
-//                 dx[i] = Vect(0.0);
-//                 dx[j] = Vect(0.0);
-//                 dv[i] = Vect(0.0);
-//                 dv[j] = Vect(0.0);
-//             }
-//         }
-//     /* End of Cal collide */
-//     struct timeval t_after_coll;
-//     gettimeofday(&t_after_coll, NULL);
-
-//     float	 time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
-    
-//     cout << "calculate gravity: %fms\n" % (time_after_grav - time_start);
-//     cout << "calculate collide: %fms\n" % (time_after_coll - time_after_grav);
-
-//     for (i = 0; i < n; i++)
-//     {
-//         a[i].c += dx[i];
-//         a[i].v += dv[i];
-//     }
-// }
 
 void collide(const BodyX &a, const BodyX &b, Vect &vat, Vect &vbt)
 {
@@ -163,6 +109,7 @@ void iterate2(BodyX *a)
 
     int i, j;
  /* Cal gravity */
+    #pragma omp parallel num_threads(NUM_THREADS)
     for (i = 0; i < n; i++)
     {
         dv[i] = Vect(0, 0, 0);
