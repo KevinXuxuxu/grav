@@ -40,7 +40,7 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
     char xx[N];
     fin>>xx>>xx>>xx>>n;
     fin>>xx>>T>>xx;
-    printf("T: %lld\nn: %d", T, n);
+    printf("T: %lld\nn: %d\n", T, n);
     *cs = (Vect *) malloc(sizeof(Vect) * n);
     *vs = (Vect *) malloc(sizeof(Vect) * n);
     *ms = (float *) malloc(sizeof(float) * n);
@@ -57,8 +57,8 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
         printf("tmp=%f\n", tmp);
         (*cs)[i].x = tmp;
         printf("cx=%f\n", (*cs)[i].x);
-        fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>*ms[i];
-        *sizes[i] = 0.2 * pow(*ms[i], 1.0/3.0);
+        fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>(*ms)[i];
+        (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
     }
     // printf("cs[0]=%f", *cs[0]->x);
 }
