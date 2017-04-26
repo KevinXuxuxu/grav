@@ -30,8 +30,6 @@ extern float* sizes;
 
 
 extern void input(Vect* cs, Vect* vs, float* ms, float* sizes);
-// extern Force calForce(const BodyX &a, BodyX b);
-// extern void iterate(BodyX *a);
 extern Vect caldv(Vect a_c, Vect a_v, Vect b_c, Vect b_v); //impulse of a on b
 extern Vect caldx(Vect b_c, Vect b_v, Vect a_c, Vect a_v); //impulse of a on b
 extern void collide(const Vect a_c, const Vect a_v, const Vect a_m, 

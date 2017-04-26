@@ -48,20 +48,10 @@ void input(Vect* cs, Vect* vs, float* ms, float* sizes)
     for(int i=0;i<n;i++)
     {
         fin>>cs[i].x>>cs[i].y>>cs[i].z>>vs[i].x>>vs[i].y>>vs[i].z>>ms[i];
-        sizes[i] = 0.2 * pow(a[i].m, 1.0/3.0);
+        sizes[i] = 0.2 * pow(ms[i], 1.0/3.0);
     }
 }
-// Force calForce(const BodyX &a, BodyX b)
-// {
-//     Force f;
-//     float	 r2 = (a.c - b.c) & (a.c - b.c);
-//     float	 r = (a.c - b.c).abs();
-//     if (r == 0.0)
-//         return Force(0);
-//     f = (b.c - a.c) / r * (G * a.m * b.m / r2);
-//     //printf("Force (%.2lf, %.2lf, %.2lf)\n", f.x, f.y, f.z);
-//     return f;
-// }
+
 Vect dv[N], dx[N];
 
 void collide(const Vect a_c, const Vect a_v, const Vect a_m, 
@@ -96,8 +86,8 @@ Vect caldv(Vect a_c, Vect a_v, Vect b_c, Vect b_v) //impulse of a on b
 }
 Vect caldx(Vect b_c, Vect b_v, Vect a_c, Vect a_v) //impulse of a on b
 {
-    Vect dx = a.c - b.c;
-    Vect dv = a.v - b.v;
+    Vect dx = a_c - b_c;
+    Vect dv = a_v - b_v;
     float	 r = dx.abs();
     return G * a.m * (
                       1.0 / 2.0 * dx / (r * r * r) * dt * dt +
