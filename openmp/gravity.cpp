@@ -137,7 +137,7 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
         // dx[i] = Vect(0, 0, 0);
         float vx = 0, vy = 0, vz = 0, xx = 0, xy = 0, xz = 0;
 
-        #pragma omp parallel for reduction(+: vx, vy, vz, xx, xy, xz)
+        #pragma omp parallel for reduction(+: vx, vy, vz, xx, xy, xz)// shared (cs, vs, ms)
         for (j = 0; j < n; j++)
         {
             if(j!=i)
