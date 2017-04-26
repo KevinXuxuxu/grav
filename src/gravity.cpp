@@ -25,8 +25,6 @@ using namespace std;
 int n;
 long long T;
 
-BodyX body[N];
-
 void input(BodyX *a)
 {
     ifstream fin("config.in");
