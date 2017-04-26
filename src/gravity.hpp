@@ -35,7 +35,7 @@ extern Vect caldx(Vect a_c, Vect a_v, float a_m, Vect b_c, Vect b_v); //impulse 
 extern void collide(const Vect a_c, const Vect a_v, float a_m, 
     const Vect b_c, const Vect b_v, float b_m, 
     Vect &vat, Vect &vbt);
-extern void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes);
+extern void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes,  Vect *dv, Vect *dx);
 extern void destory();
 //extern void iterateOcttree(BodyX *body);
 
