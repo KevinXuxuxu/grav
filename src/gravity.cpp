@@ -58,7 +58,6 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
         (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
     }
 }
-<<<<<<< HEAD
 Force calForce(const BodyX &a, BodyX b)
 {
     Force f;
@@ -71,9 +70,6 @@ Force calForce(const BodyX &a, BodyX b)
     return f;
 }
 Vect dv[N], dx[N];
-=======
-
->>>>>>> 3258e4344da5fcbfdf5c076ad56fb6d41ad24f72
 
 
 void collide(const Vect &a_c, const Vect &a_v, float a_m, 
@@ -125,7 +121,7 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
 
     double	 time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
     int i, j;
-    
+
     /* Cal gravity */
     for (i = 0; i < n; i++)
     {
