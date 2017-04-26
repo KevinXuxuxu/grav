@@ -124,7 +124,8 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
     int i, j;
 
     /* Cal gravity */
-    #pragma omp parallel num_threads(NUM_THREADS) {
+    #pragma omp parallel num_threads(NUM_THREADS)
+    {
         int noth = omp_get_num_threads();
         int size = n / noth + 1;
         int id = omp_get_thread_num();
