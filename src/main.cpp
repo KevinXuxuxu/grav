@@ -35,7 +35,13 @@ int main(int argc, const char * argv[]) {
         iterate2(cs, vs, ms, sizes, dv, dx);
         n--;
     }
-    destory();
+    // Destory rescource
+	if(cs != NULL) free(cs);
+    if(vs != NULL) free(vs);
+    if(ms != NULL) free(ms);
+    if(sizes != NULL) free(sizes);
+    if(dv != NULL) free(dv);
+    if(dx != NULL) free(dx);
     return 0;
 }
 

@@ -51,16 +51,10 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
     assert(*cs != NULL && *vs != NULL && *ms != NULL && *sizes != NULL && *dv != NULL && *dx != NULL);
     for(int i=0;i<n;i++)
     {   
-        float tmp;
-
-        fin>>tmp;
-        printf("tmp=%f\n", tmp);
-        (*cs)[i].x = tmp;
-        printf("cx=%f\n", (*cs)[i].x);
+        fin>>(*cs)[i].x;
         fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>(*ms)[i];
         (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
     }
-    // printf("cs[0]=%f", *cs[0]->x);
 }
 
 
@@ -113,7 +107,6 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
     gettimeofday(&t_start, NULL);
 
     double	 time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
-    printf("Cal gravity\n");
     int i, j;
     /* Cal gravity */
     for (i = 0; i < n; i++)
@@ -137,7 +130,6 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
     double	 time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
     
     /* Cal collide */
-    printf("Cal collide\n");
     Vect vit, vjt;
     for (i = 0; i < n; i++)
         for (j = i + 1; j < n; j++)
@@ -169,13 +161,6 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
     }
 }
 
-void destory(){
-    if(cs != NULL) free(cs);
-    if(vs != NULL) free(vs);
-    if(ms != NULL) free(ms);
-    if(sizes != NULL) free(sizes);
-    if(dv != NULL) free(dv);
-    if(dx != NULL) free(dx);
-}
+
 
 #endif
