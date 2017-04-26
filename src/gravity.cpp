@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <sys/time.h>
+#include <assert.h>     /* assert */
+
 
 
 #include "gravity.hpp"
@@ -54,8 +56,8 @@ void input(Vect* cs, Vect* vs, float* ms, float* sizes)
 
 Vect dv[N], dx[N];
 
-void collide(const Vect a_c, const Vect a_v, const Vect a_m, 
-    const Vect b_c, const Vect b_v, const Vect b_m, 
+void collide(const Vect a_c, const Vect a_v, float Vect a_m, 
+    const Vect b_c, const Vect b_v, float Vect b_m, 
     Vect &vat, Vect &vbt)
 {
     Vect e = a_c - b_c;
@@ -73,7 +75,7 @@ void collide(const Vect a_c, const Vect a_v, const Vect a_m,
     vbt = br + Bl * e;
 }
 
-Vect caldv(Vect a_c, Vect a_v, Vect b_c, Vect b_v) //impulse of a on b
+Vect caldv(Vect a_c, Vect a_v, float a_m, Vect b_c, Vect b_v) //impulse of a on b
 {
     Vect dx = a_c - b_c;
     Vect dv = a_v - b_v;
@@ -84,7 +86,7 @@ Vect caldv(Vect a_c, Vect a_v, Vect b_c, Vect b_v) //impulse of a on b
                       3.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt
                       );
 }
-Vect caldx(Vect b_c, Vect b_v, Vect a_c, Vect a_v) //impulse of a on b
+Vect caldx(Vect b_c, Vect b_v, float a_m, Vect a_c, Vect a_v) //impulse of a on b
 {
     Vect dx = a_c - b_c;
     Vect dv = a_v - b_v;
@@ -113,8 +115,8 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes)
         {
             if(j!=i)
             {
-                dv[i] += caldv(cs[i], vs[i], cs[j], vs[j]);
-                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j]);
+                dv[i] += caldv(cs[i], vs[i], ms[i], cs[j], vs[j]);
+                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], ms[i], cs[j], vs[j]);
             }
         }
     }
