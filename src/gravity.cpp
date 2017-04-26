@@ -3,7 +3,7 @@
 //  grav
 //
 //  Created by XuFangzhou on 17/3/28.
-//  Copyright © 2017年 XuFangzhou. All rights reserved.
+//  Copyright © 2017 XuFangzhou. All rights reserved.
 //
 #ifndef GRAVITY_CPP
 #define GRAVITY_CPP
@@ -20,7 +20,6 @@
 #include <assert.h>     /* assert */
 
 
-
 #include "gravity.hpp"
 
 using namespace std;
@@ -33,7 +32,7 @@ Vect* cs; //coordinates
 Vect* vs; //velocity
 float* ms; //mass
 float* sizes;
-
+Vect *dv, *dx;
 
 void input(Vect* cs, Vect* vs, float* ms, float* sizes)
 {
@@ -46,7 +45,9 @@ void input(Vect* cs, Vect* vs, float* ms, float* sizes)
     vs = (Vect *) malloc(sizeof(Vect) * n);
     ms = (float *) malloc(sizeof(float) * n);
     sizes = (float *) malloc(sizeof(float) * n);
-    assert(cs != NULL && vs != NULL && ms != NULL && sizes != NULL);
+    dv = (Vect *) malloc(sizeof(Vect) * n);
+    dx = (Vect *) malloc(sizeof(Vect) * n);
+    assert(cs != NULL && vs != NULL && ms != NULL && sizes != NULL && dv != NULL && dx != NULL);
     for(int i=0;i<n;i++)
     {
         fin>>cs[i].x>>cs[i].y>>cs[i].z>>vs[i].x>>vs[i].y>>vs[i].z>>ms[i];
@@ -54,7 +55,7 @@ void input(Vect* cs, Vect* vs, float* ms, float* sizes)
     }
 }
 
-Vect dv[N], dx[N];
+
 
 void collide(const Vect a_c, const Vect a_v, float a_m, 
     const Vect b_c, const Vect b_v, float b_m, 
@@ -104,7 +105,7 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes)
     gettimeofday(&t_start, NULL);
 
     double	 time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
-
+    printf("Cal gravity\n");
     int i, j;
     /* Cal gravity */
     for (i = 0; i < n; i++)
@@ -128,7 +129,7 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes)
     double	 time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
     
     /* Cal collide */
-    
+    printf("Cal collide\n");
     Vect vit, vjt;
     for (i = 0; i < n; i++)
         for (j = i + 1; j < n; j++)
@@ -165,6 +166,8 @@ void destory(){
     if(vs != NULL) free(vs);
     if(ms != NULL) free(ms);
     if(sizes != NULL) free(sizes);
+    if(dv != NULL) free(dv);
+    if(dx != NULL) free(dx);
 }
 
 #endif

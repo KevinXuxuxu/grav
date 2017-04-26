@@ -29,7 +29,7 @@ int main(int argc, const char * argv[]) {
         iterate2(cs, vs, ms, sizes);
         n--;
     }
-    
+    destory()
     return 0;
 }
 

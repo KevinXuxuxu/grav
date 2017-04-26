@@ -27,7 +27,7 @@ extern Vect* cs; //coordinates
 extern Vect* vs; //velocity
 extern float* ms; //mass
 extern float* sizes;
-
+extern Vect *dv, *dx;
 
 extern void input(Vect* cs, Vect* vs, float* ms, float* sizes);
 extern Vect caldv(Vect a_c, Vect a_v, float a_m, Vect b_c, Vect b_v); //impulse of a on b
