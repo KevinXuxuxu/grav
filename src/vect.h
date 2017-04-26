@@ -26,7 +26,7 @@ struct Vect
         {
             float	 x, y, z;
         };
-        float	 c[3];
+        // float	 c[3];
     };
     Vect operator +(Vect b) const
     {
