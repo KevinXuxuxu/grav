@@ -28,33 +28,33 @@ int n;
 long long T;
 
 // BodyX body[N];
-// Vect* cs; //coordinates
-// Vect* vs; //velocity
-// float* ms; //mass
-// float* sizes;
-// Vect *dv, *dx;
+Vect* cs; //coordinates
+Vect* vs; //velocity
+float* ms; //mass
+float* sizes;
+Vect *dv, *dx;
 
-void input(Vect* cs, Vect* vs, float* ms, float* sizes)
+void input(Vect** cs, Vect** vs, float** ms, float** sizes)
 {
     ifstream fin("config.in");
     char xx[N];
     fin>>xx>>xx>>xx>>n;
     fin>>xx>>T>>xx;
     printf("T: %lld\nn: %d", T, n);
-    cs = (Vect *) malloc(sizeof(Vect) * n);
-    vs = (Vect *) malloc(sizeof(Vect) * n);
-    ms = (float *) malloc(sizeof(float) * n);
-    sizes = (float *) malloc(sizeof(float) * n);
-    dv = (Vect *) malloc(sizeof(Vect) * n);
-    dx = (Vect *) malloc(sizeof(Vect) * n);
+    *cs = (Vect *) malloc(sizeof(Vect) * n);
+    *vs = (Vect *) malloc(sizeof(Vect) * n);
+    *ms = (float *) malloc(sizeof(float) * n);
+    *sizes = (float *) malloc(sizeof(float) * n);
+    *dv = (Vect *) malloc(sizeof(Vect) * n);
+    *dx = (Vect *) malloc(sizeof(Vect) * n);
 
-    assert(cs != NULL && vs != NULL && ms != NULL && sizes != NULL && dv != NULL && dx != NULL);
+    assert(*cs != NULL && *vs != NULL && *ms != NULL && *sizes != NULL && *dv != NULL && *dx != NULL);
     for(int i=0;i<n;i++)
     {
-        fin>>cs[i].x>>cs[i].y>>cs[i].z>>vs[i].x>>vs[i].y>>vs[i].z>>ms[i];
-        sizes[i] = 0.2 * pow(ms[i], 1.0/3.0);
+        fin>>*cs[i].x>>*cs[i].y>>*cs[i].z>>*vs[i].x>>*vs[i].y>>*vs[i].z>>*ms[i];
+        *sizes[i] = 0.2 * pow(*ms[i], 1.0/3.0);
     }
-    printf("cs[0]=%f", cs[0].x);
+    printf("cs[0]=%f", *cs[0].x);
 }
 
 

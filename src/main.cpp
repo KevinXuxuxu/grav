@@ -29,7 +29,7 @@ Vect *dv, *dx;
 
 
 int main(int argc, const char * argv[]) {
-    input(cs, vs, ms, sizes);
+    input(&cs, &vs, &ms, &sizes);
     int n = 100000;
     while(n>0) {
         iterate2(cs, vs, ms, sizes);
