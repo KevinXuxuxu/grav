@@ -59,7 +59,7 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
 
 
 
-void collide(const Vect &a_c, const &Vect a_v, float a_m, 
+void collide(const Vect &a_c, const Vect &a_v, float a_m, 
     const Vect &b_c, const Vect &b_v, float b_m, 
     Vect &vat, Vect &vbt)
 {
