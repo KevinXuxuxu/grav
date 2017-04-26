@@ -21,6 +21,12 @@ const int SamplingTimer = 1;
 const int samplingrate = 40; //in milliseconds
 const int iterationnum = 10;
 const float	 PI = 3.14159265358979323846264338327950288419716939937510;
+Vect* cs; //coordinates
+Vect* vs; //velocity
+float* ms; //mass
+float* sizes;
+Vect *dv, *dx;
+
 
 int main(int argc, const char * argv[]) {
     input(cs, vs, ms, sizes);
