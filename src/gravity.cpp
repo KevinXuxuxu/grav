@@ -50,8 +50,11 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
 
     assert(*cs != NULL && *vs != NULL && *ms != NULL && *sizes != NULL && *dv != NULL && *dx != NULL);
     for(int i=0;i<n;i++)
-    {
-        fin>>(*cs)[i].x>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>*ms[i];
+    {   
+        float tmp;
+        fin>>tmp;
+        (*cs)[i].x = tmp;
+        fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>*ms[i];
         *sizes[i] = 0.2 * pow(*ms[i], 1.0/3.0);
     }
     // printf("cs[0]=%f", *cs[0]->x);
