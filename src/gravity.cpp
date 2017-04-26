@@ -58,18 +58,18 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
         (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
     }
 }
-Force calForce(const BodyX &a, BodyX b)
-{
-    Force f;
-    float	 r2 = (a.c - b.c) & (a.c - b.c);
-    float	 r = (a.c - b.c).abs();
-    if (r == 0.0)
-        return Force(0);
-    f = (b.c - a.c) / r * (G * a.m * b.m / r2);
-    //printf("Force (%.2lf, %.2lf, %.2lf)\n", f.x, f.y, f.z);
-    return f;
-}
-Vect dv[N], dx[N];
+// Force calForce(const BodyX &a, BodyX b)
+// {
+//     Force f;
+//     float	 r2 = (a.c - b.c) & (a.c - b.c);
+//     float	 r = (a.c - b.c).abs();
+//     if (r == 0.0)
+//         return Force(0);
+//     f = (b.c - a.c) / r * (G * a.m * b.m / r2);
+//     //printf("Force (%.2lf, %.2lf, %.2lf)\n", f.x, f.y, f.z);
+//     return f;
+// }
+// Vect dv[N], dx[N];
 
 
 void collide(const Vect &a_c, const Vect &a_v, float a_m, 
