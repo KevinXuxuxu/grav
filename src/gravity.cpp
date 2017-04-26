@@ -34,7 +34,7 @@ float* ms; //mass
 float* sizes;
 Vect *dv, *dx;
 
-void input(Vect** cs, Vect** vs, float** ms, float** sizes)
+void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** dx)
 {
     ifstream fin("config.in");
     char xx[N];
@@ -100,7 +100,7 @@ Vect caldx(Vect b_c, Vect b_v, float a_m, Vect a_c, Vect a_v) //impulse of a on 
                       1.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt * dt
                       );
 }
-void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes)
+void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
 {
     cout << "****************iterate**********************\n";
     struct timeval t_start;
