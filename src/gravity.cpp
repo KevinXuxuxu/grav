@@ -102,6 +102,68 @@ Vect caldx(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, co
                       );
 }
 
+void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx) {
+printf("****************iterate**********************\n");
+    struct timeval t_start;
+    gettimeofday(&t_start, NULL);
+
+    double   time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
+    int i, j;
+    /* Cal gravity */
+    for (i = 0; i < n; i++)
+    {
+        dv[i] = Vect(0, 0, 0);
+        dx[i] = Vect(0, 0, 0);
+        for (j = 0; j < n; j++)
+        {
+            if(j!=i)
+            {
+                dv[i] += caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
+                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
+            }
+        }
+    }
+    /* End of Cal gravity */
+
+    struct timeval t_after_grav;
+    gettimeofday(&t_after_grav, NULL);
+
+    double   time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
+    
+    /* Cal collide */
+    Vect vit, vjt;
+    for (i = 0; i < n; i++)
+        for (j = i + 1; j < n; j++)
+        {
+            if (((cs[i] + dx[i]) - (cs[j] + dx[j])).abs() <= sizes[i] + sizes[j])
+            {
+                collide(cs[i], vs[i], ms[i], cs[j], vs[j], ms[j], vit, vjt);
+                vs[i] = vit;
+                vs[j] = vjt;
+                dx[i] = Vect(0.0);
+                dx[j] = Vect(0.0);
+                dv[i] = Vect(0.0);
+                dv[j] = Vect(0.0);
+            }
+        }
+     /* End of Cal collide */
+    struct timeval t_after_coll;
+    gettimeofday(&t_after_coll, NULL);
+
+    double   time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
+    
+    printf("calculate gravity: %f ms\n", (time_after_grav - time_start));
+    printf("calculate collide: %f ms\n", (time_after_coll - time_after_grav));
+
+    for (i = 0; i < n; i++)
+    {
+        cs[i] += dx[i];
+        vs[i] += dv[i];
+    }
+
+    
+}
+
 void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
 {
     printf("****************iterate**********************\n");
