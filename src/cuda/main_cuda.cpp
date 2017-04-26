@@ -32,7 +32,7 @@ int main(int argc, const char * argv[]) {
     input(&cs, &vs, &ms, &sizes, &dv, &dx);
     int n = 100000;
     while(n>0) {
-        iterate2(cs, vs, ms, sizes, dv, dx);
+        iterate_cuda(cs, vs, ms, sizes, dv, dx);
         n--;
     }
     // Destory rescource

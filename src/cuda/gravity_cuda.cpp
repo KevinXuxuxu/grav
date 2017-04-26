@@ -18,11 +18,13 @@
 #include <algorithm>
 #include <sys/time.h>
 #include <assert.h>     /* assert */
-
+#include <cuda.h>
+#include <cuda_runtime.h>
 
 #include "gravity.hpp"
 
 using namespace std;
+#define NUM_THREADS_PER_BLOCK 1024
 
 int n;
 long long T;
@@ -77,7 +79,9 @@ void collide(const Vect &a_c, const Vect &a_v, float a_m,
     vat = ar + Al * e;
     vbt = br + Bl * e;
 }
+
 /* impulse of a on b */
+__device__
 Vect caldv(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m)
 {
     Vect dx = a_c - b_c;
@@ -89,7 +93,9 @@ Vect caldv(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, co
                       3.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt
                       );
 }
+
 /* impulse of a on b */
+__device__
 Vect caldx(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m) 
 {
     Vect dx = a_c - b_c;
@@ -102,27 +108,85 @@ Vect caldx(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, co
                       );
 }
 
+
+//     for (j = 0; j < n; j++)
+//     {
+//         if(j!=i)
+//         {
+//             dv[i] += caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
+//             dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
+//         }
+//     }
+// }
+__global__
+void
+init_d_kernel(Vect * d,int n) {
+    int index = blockDim.x * blockIdx.x + threadIdx.x;
+    if(index < n) {
+        d[index] = 0;
+    }
+}
+
+
+__global__
+void
+cal_gravity_kernel(Vect * cs_d,Vect * vs_d,float* ms_d,float* sizes_d,Vect * dv_d,Vect *  dx_d,int n,int GRID_SIZE, int i) {
+    int index = blockDim.x * blockIdx.x + threadIdx.x;
+
+    if(index < n && i != index) {
+        dv[i] += caldv(cs[i], vs[i], cs[index], vs[index], ms[index]);
+        dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[index], vs[index], ms[index]);
+    }
+}
+
 void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx) {
-printf("****************iterate**********************\n");
+    printf("****************iterate CUDA**********************\n");
     struct timeval t_start;
     gettimeofday(&t_start, NULL);
 
     double   time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
     int i, j;
     /* Cal gravity */
-    for (i = 0; i < n; i++)
-    {
-        dv[i] = Vect(0, 0, 0);
-        dx[i] = Vect(0, 0, 0);
-        for (j = 0; j < n; j++)
-        {
-            if(j!=i)
-            {
-                dv[i] += caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
-                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
-            }
-        }
+
+    Vect *cs_d, *vs_d, *dv_d, *dx_d;
+    float *ms_d, sizes_d;
+    int vects_size = n * sizeof(Vect), floats_size = n * sizeof(float);
+
+    /* copy to device memory */
+    cudaMalloc((void**) &cs_d, vects_size);
+    cudaMalloc((void**) &vs_d, vects_size);
+    cudaMalloc((void**) &ms_d, floats_size);
+    cudaMalloc((void**) &sizes_d, floats_size);
+    cudaMemcpy(cs_d, cs, vects_size, cudaMemcpyHostToDevice);
+    cudaMemcpy(vs_d, vs, vects_size, cudaMemcpyHostToDevice);
+    cudaMemcpy(dv_d, dv, floats_size, cudaMemcpyHostToDevice);
+    cudaMemcpy(dx_d, dx, floats_size, cudaMemcpyHostToDevice);
+    // allocate result matrix on device
+    cudaMalloc((void**) &dv_d, floats_size);
+    cudaMalloc((void**) &dx_d, floats_size);
+
+    // dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
+    // int GRID_SIZE = (int)ceil((double)n / (double)BLOCK_SIZE);
+    // dim3 dimGrid(GRID_SIZE, GRID_SIZE);
+    int GRID_SIZE = (int)ceil((double)n / (double)NUM_THREADS_PER_BLOCK);
+
+    init_d_kernel<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>(dx_d, n);
+    init_d_kernel<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>(dv_d, n);
+
+    for(int i = 0;i < n;i ++) {
+        cal_gravity_kernel<<<GRID_SIZE, BLOCK_SIZE>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE, i);   
     }
+    // cal_gravity_kernel<<<dimGrid, dimBlock>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE);
+    cudaMemcpy(dv, dv_d, floats_size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(dx, dx_d, floats_size, cudaMemcpyDeviceToHost);
+
+    cudaFree(cs_d);
+    cudaFree(vs_d);
+    cudaFree(ms_d);
+    cudaFree(sizes_d);
+    cudaFree(dx_d);
+    cudaFree(dv_d);
+
     /* End of Cal gravity */
 
     struct timeval t_after_grav;
