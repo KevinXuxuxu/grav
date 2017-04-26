@@ -15,6 +15,8 @@
 
 #include <cstdio>
 
+#include <stdlib.h>
+
 #include "gravity.hpp"
 
 const int SamplingTimer = 1;
