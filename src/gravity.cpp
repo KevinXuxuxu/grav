@@ -80,7 +80,7 @@ Vect caldv(Vect a_c, Vect a_v, float a_m, Vect b_c, Vect b_v) //impulse of a on 
     Vect dx = a_c - b_c;
     Vect dv = a_v - b_v;
     float	 r = dx.abs();
-    return G * a.m * (
+    return G * a_m * (
                       dx / (r * r * r) * dt +
                       1.0 / 2.0 * dv / (r * r * r) * dt * dt +
                       3.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt
@@ -91,7 +91,7 @@ Vect caldx(Vect b_c, Vect b_v, float a_m, Vect a_c, Vect a_v) //impulse of a on 
     Vect dx = a_c - b_c;
     Vect dv = a_v - b_v;
     float	 r = dx.abs();
-    return G * a.m * (
+    return G * a_m * (
                       1.0 / 2.0 * dx / (r * r * r) * dt * dt +
                       1.0 / 6.0 * dv / (r * r * r) * dt * dt * dt +
                       1.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt * dt
