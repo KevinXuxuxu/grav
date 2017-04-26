@@ -5,8 +5,8 @@
 //  Created by XuFangzhou on 17/3/28.
 //  Copyright © 2017 XuFangzhou. All rights reserved.
 //
-#ifndef GRAVITY_CPP
-#define GRAVITY_CPP
+#ifndef GRAVITY_CUDA_CPP
+#define GRAVITY_CUDA_CPP
 
 #include <iostream>
 #include <fstream>
