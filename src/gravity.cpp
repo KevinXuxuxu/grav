@@ -28,11 +28,11 @@ int n;
 long long T;
 
 // BodyX body[N];
-Vect* cs; //coordinates
-Vect* vs; //velocity
-float* ms; //mass
-float* sizes;
-Vect *dv, *dx;
+// Vect* cs; //coordinates
+// Vect* vs; //velocity
+// float* ms; //mass
+// float* sizes;
+// Vect *dv, *dx;
 
 void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** dx)
 {
