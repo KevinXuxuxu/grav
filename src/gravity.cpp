@@ -19,6 +19,7 @@
 #include <sys/time.h>
 #include <assert.h>     /* assert */
 
+#include <omp.h>
 
 #include "gravity.hpp"
 
@@ -123,16 +124,23 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
     int i, j;
 
     /* Cal gravity */
-    for (i = 0; i < n; i++)
-    {
-        dv[i] = Vect(0, 0, 0);
-        dx[i] = Vect(0, 0, 0);
-        for (j = 0; j < n; j++)
+    #pragma omp parallel num_threads(NUM_THREADS) {
+        int noth = omp_get_num_threads();
+        int size = n / noth + 1;
+        int id = omp_get_thread_num();
+        int start = id * size;
+        int end = min((id + 1) * size, n);
+        for (i = start; i < end; i++)
         {
-            if(j!=i)
+            dv[i] = Vect(0, 0, 0);
+            dx[i] = Vect(0, 0, 0);
+            for (j = 0; j < n; j++)
             {
-                dv[i] += caldv(cs[i], vs[i], ms[i], cs[j], vs[j]);
-                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], ms[i], cs[j], vs[j]);
+                if(j!=i)
+                {
+                    dv[i] += caldv(cs[i], vs[i], ms[i], cs[j], vs[j]);
+                    dx[i] += vs[i] * dt + caldx(cs[i], vs[i], ms[i], cs[j], vs[j]);
+                }
             }
         }
     }
@@ -140,7 +148,6 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
 
     struct timeval t_after_grav;
     gettimeofday(&t_after_grav, NULL);
-
     double	 time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
     
     /* Cal collide */
