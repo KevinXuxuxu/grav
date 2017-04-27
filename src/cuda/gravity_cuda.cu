@@ -149,7 +149,7 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     /* Cal gravity */
 
     Vect *cs_d, *vs_d, *dv_d, *dx_d;
-    float *ms_d, sizes_d;
+    float *ms_d, *sizes_d;
     int vects_size = n * sizeof(Vect), floats_size = n * sizeof(float);
 
     /* copy to device memory */
@@ -170,8 +170,8 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     // dim3 dimGrid(GRID_SIZE, GRID_SIZE);
     int GRID_SIZE = (int)ceil((double)n / (double)NUM_THREADS_PER_BLOCK);
 
-    init_d_kernel<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>(dx_d, n);
-    init_d_kernel<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>(dv_d, n);
+    init_d_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(dx_d, n);
+    init_d_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(dv_d, n);
 
     for(int i = 0;i < n;i ++) {
         cal_gravity_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE, i);   

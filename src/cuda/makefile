@@ -1,6 +1,6 @@
 PROJ = main
 CC = g++
-NVCC = nvcc -O3
+NVCC = nvcc -O3 --ptxas-options=-v -arch=sm_20
 
 
 CFLAGS = -c -g -Wall -I/opt/local/include -I$(HOME)/cppunit/include -msse3 -O3 -lm
