@@ -134,8 +134,8 @@ cal_gravity_kernel(Vect * cs_d,Vect * vs_d,float* ms_d,float* sizes_d,Vect * dv_
     int index = blockDim.x * blockIdx.x + threadIdx.x;
 
     if(index < n && i != index) {
-        dv[i] += caldv(cs[i], vs[i], cs[index], vs[index], ms[index]);
-        dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[index], vs[index], ms[index]);
+        dv_d[i] += caldv(cs_d[i], vs_d[i], cs_d[index], vs_d[index], ms_d[index]);
+        dx_d[i] += vs_d[i] * dt + caldx(cs_d[i], vs_d[i], cs_d[index], vs_d[index], ms_d[index]);
     }
 }
 
@@ -159,8 +159,8 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     cudaMalloc((void**) &sizes_d, floats_size);
     cudaMemcpy(cs_d, cs, vects_size, cudaMemcpyHostToDevice);
     cudaMemcpy(vs_d, vs, vects_size, cudaMemcpyHostToDevice);
-    cudaMemcpy(dv_d, dv, floats_size, cudaMemcpyHostToDevice);
-    cudaMemcpy(dx_d, dx, floats_size, cudaMemcpyHostToDevice);
+    cudaMemcpy(ms_d, ms, floats_size, cudaMemcpyHostToDevice);
+    cudaMemcpy(sizes_d, sizes, floats_size, cudaMemcpyHostToDevice);
     // allocate result matrix on device
     cudaMalloc((void**) &dv_d, floats_size);
     cudaMalloc((void**) &dx_d, floats_size);
@@ -174,7 +174,7 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     init_d_kernel<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>(dv_d, n);
 
     for(int i = 0;i < n;i ++) {
-        cal_gravity_kernel<<<GRID_SIZE, BLOCK_SIZE>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE, i);   
+        cal_gravity_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE, i);   
     }
     // cal_gravity_kernel<<<dimGrid, dimBlock>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE);
     cudaMemcpy(dv, dv_d, floats_size, cudaMemcpyDeviceToHost);
