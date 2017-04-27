@@ -3,22 +3,22 @@ CC = g++
 NVCC = nvcc -O3
 
 
-CFLAGS = -c -g -Wall -I/opt/local/include -I$(HOME)/cppunit/include -msse2 -msse3 -O2 -lm
+CFLAGS = -c -g -Wall -I/opt/local/include -I$(HOME)/cppunit/include -msse3 -O3 -lm
 LDFLAGS = -L/opt/local/lib -L$(HOME)/cppunit/lib
 LIBS = -lcppunit -ldl
-OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 
+OBJS = gravity_cuda.o main_cuda.o
 
 all: $(PROJ)
 
-$(PROJ): $(OBJS)
-		$(CC) $(OMPFLAGS) $(LDFLAGS) $^ -o $@ $(LIBS)
+$(PROJ): $(OBJS) $(TEST_CASES)
+	$(NVCC) $(LDFLAGS) $^ -o $@ $(LIBS)
+
+%.o : %.cu
+	$(NVCC) -c $< -o $@
 
 %.o : %.cpp
-		$(CC) $(CFLAGS) $< -o $@ $(SIMDFLAGS) $(OMPFLAGS)
-
-%.o : %.cpp %.h
-		$(CC) $(CFLAGS) $< -o $@ $(SIMDFLAGS)
+	$(CC) $(CFLAGS) $< -o $@ 
 
 clean:
-		rm -f $(PROJ) $(OBJS) *.xml
+	rm -f $(PROJ) $(OBJS) $(TEST_CASES) *.xml
