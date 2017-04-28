@@ -59,7 +59,7 @@ struct Vect
     {
         return x * b.x + y * b.y + z * b.z;
     }
-    float	 abs() const
+    __host__ __device__ float	 abs() const
     {
         return sqrt(x * x + y * y + z * z);
     }

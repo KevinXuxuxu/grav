@@ -12,7 +12,6 @@
 #include <stdio.h>
 
 #include "vect.h"
-#include "body.hpp"
 
 const float	 G = 1.73205;
 const int N = 100000;

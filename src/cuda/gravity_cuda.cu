@@ -81,7 +81,6 @@ void collide(const Vect &a_c, const Vect &a_v, float a_m,
 }
 
 /* impulse of a on b */
-__device__
 Vect caldv(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m)
 {
     Vect dx = a_c - b_c;
@@ -95,7 +94,6 @@ Vect caldv(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, co
 }
 
 /* impulse of a on b */
-__device__
 Vect caldx(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m) 
 {
     Vect dx = a_c - b_c;
@@ -123,7 +121,9 @@ void
 init_d_kernel(Vect * d,int n) {
     int index = blockDim.x * blockIdx.x + threadIdx.x;
     if(index < n) {
-        d[index] = 0;
+        d[index].x = 0.0f;
+        d[index].y = 0.0f;
+        d[index].z = 0.0f;
     }
 }
 
