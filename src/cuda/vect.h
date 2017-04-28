@@ -28,7 +28,7 @@ struct Vect
         };
         // float	 c[3];
     };
-    Vect operator +(Vect b) const
+    __host__ __device__ Vect operator +(Vect b) const
     {
         return Vect(x + b.x, y + b.y, z + b.z);
     }
