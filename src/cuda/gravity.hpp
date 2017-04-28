@@ -30,11 +30,8 @@ extern float* sizes;
 extern Vect *dv, *dx;
 
 extern void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** dx);
-// extern Vect caldv(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m); //impulse of a on b
-// extern Vect caldx(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m); //impulse of a on b
-extern void collide(const Vect &a_c, const Vect &a_v, float a_m, 
-    const Vect &b_c, const Vect &b_v, float b_m, 
-    Vect &vat, Vect &vbt);
+
+
 extern void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes,  Vect *dv, Vect *dx);
 //extern void iterateOcttree(BodyX *body);
 
