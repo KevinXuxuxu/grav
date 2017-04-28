@@ -32,30 +32,30 @@ struct Vect
     {
         return Vect(x + b.x, y + b.y, z + b.z);
     }
-    Vect operator +=(Vect b)
+    __host__ __device__  Vect operator +=(Vect b)
     {
         x += b.x;
         y += b.y;
         z += b.z;
         return *this;
     }
-    Vect operator -(Vect b) const
+    __host__ __device__  Vect operator -(Vect b) const
     {
         return Vect(x - b.x, y - b.y, z - b.z);
     }
-    Vect operator *(float	 k) const
+   __host__ __device__  Vect operator *(float	 k) const
     {
         return Vect(x * k, y * k, z * k);
     }
-    friend Vect operator *(float	 k, Vect v)
+    __host__ __device__ friend Vect operator *(float	 k, Vect v)
     {
         return Vect(v.x * k, v.y * k, v.z * k);
     }
-    Vect operator /(float	 k) const
+    __host__ __device__ Vect operator /(float	 k) const
     {
         return Vect(x / k, y / k, z / k);
     }
-    float	 operator &(Vect b) const
+    __host__ __device__ float	 operator &(Vect b) const
     {
         return x * b.x + y * b.y + z * b.z;
     }
