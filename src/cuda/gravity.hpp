@@ -19,6 +19,7 @@ const float	 OcttreeThreshold = 0.1;
 
 extern int n;
 extern long long T;
+const float	 dt = 0.005;
 
 // extern BodyX body[N];
 
