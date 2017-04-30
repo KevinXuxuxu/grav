@@ -102,23 +102,12 @@ Vect caldx(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, co
 }
 
 
-//     for (j = 0; j < n; j++)
-//     {
-//         if(j!=i)
-//         {
-//             dv[i] += caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
-//             dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
-//         }
-//     }
-// }
 __global__
 void
 init_d_kernel(Vect * d,int n) {
     int index = blockDim.x * blockIdx.x + threadIdx.x;
     if(index < n) {
-        d[index].x = 0.0f;
-        d[index].y = 0.0f;
-        d[index].z = 0.0f;
+        d[index] = Vect(0.0f, 0.0f, 0.0f);
     }
 }
 
@@ -163,21 +152,6 @@ cal_collide_kernel(Vect * cs_d,Vect * vs_d,float* ms_d,float* sizes_d,Vect * dv_
 
         }
     }
-            // Vect vit, vjt;
-            // for (j = i + 1; j < n; j++)
-//         {
-//             if (((cs[i] + dx[i]) - (cs[j] + dx[j])).abs() <= sizes[i] + sizes[j])
-//             {
-//                 collide(cs[i], vs[i], ms[i], cs[j], vs[j], ms[j], vit, vjt);
-//                 vs[i] = vit;
-//                 vs[j] = vjt;
-//                 dx[i] = Vect(0.0);
-//                 dx[j] = Vect(0.0);
-//                 dv[i] = Vect(0.0);
-//                 dv[j] = Vect(0.0);
-//             }
-//         }
-
 
 }
 
@@ -212,9 +186,6 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     // int GRID_SIZE = (int)ceil((double)n / (double)BLOCK_SIZE);
     // dim3 dimGrid(GRID_SIZE, GRID_SIZE);
     int GRID_SIZE = (int)ceil((double)n / (double)NUM_THREADS_PER_BLOCK);
-
-    // init_d_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(dx_d, n);
-    // init_d_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(dv_d, n);
 
     for(int i = 0;i < n;i ++) {
         cal_gravity_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE, i);   
