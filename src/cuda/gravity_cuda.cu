@@ -45,7 +45,7 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
 
     assert(*cs != NULL && *vs != NULL && *ms != NULL && *sizes != NULL && *dv != NULL && *dx != NULL);
     for(int i=0;i<n;i++)
-    {   
+    {   w
         fin>>(*cs)[i].x;
         fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>(*ms)[i];
         (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
@@ -53,7 +53,7 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
 }
 
 
-
+__host__ __device__
 void collide(const Vect &a_c, const Vect &a_v, float a_m, 
     const Vect &b_c, const Vect &b_v, float b_m, 
     Vect &vat, Vect &vbt)
@@ -145,6 +145,43 @@ cal_gravity_kernel(Vect * cs_d,Vect * vs_d,float* ms_d,float* sizes_d,Vect * dv_
     dx_d[i] = dx_s;
 }
 
+
+__global__
+void 
+cal_collide_kernel(Vect * cs_d,Vect * vs_d,float* ms_d,float* sizes_d,Vect * dv_d,Vect *  dx_d,int n,int GRID_SIZE, int i) {
+    int index = blockDim.x * blockIdx.x + threadIdx.x;
+    if(index > i && index < n) {
+        if(((cs_d[i] + dx_d[i]) - (cs_d[index] + dx_d[index])).abs() <= sizes_d[i] + sizes_d[j]) {
+            Vect vit, vjt;
+            collide(cs_d[i], vs_d[i], ms_d[i], cs_d[index], vs_d[index], ms_d[index], vit, vjt);
+            vs_d[i] = vit;
+            vs_d[index] = vjt;
+            dx_d[i] = Vect(0.0);
+            dx_d[index] = Vect(0.0);
+            dv_d[i] = Vect(0.0);
+            dv_d[index] = Vect(0.0);
+
+        }
+    }
+            // Vect vit, vjt;
+            // for (j = i + 1; j < n; j++)
+//         {
+//             if (((cs[i] + dx[i]) - (cs[j] + dx[j])).abs() <= sizes[i] + sizes[j])
+//             {
+//                 collide(cs[i], vs[i], ms[i], cs[j], vs[j], ms[j], vit, vjt);
+//                 vs[i] = vit;
+//                 vs[j] = vjt;
+//                 dx[i] = Vect(0.0);
+//                 dx[j] = Vect(0.0);
+//                 dv[i] = Vect(0.0);
+//                 dv[j] = Vect(0.0);
+//             }
+//         }
+
+
+}
+
+
 void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx) {
     printf("****************iterate CUDA**********************\n");
     struct timeval t_start;
@@ -186,26 +223,22 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     /* End of Cal gravity */
 
     /* Cal collide */
-    Vect vit, vjt;
+    
     for (i = 0; i < n; i++) {
-        for (j = i + 1; j < n; j++)
-        {
-            if (((cs[i] + dx[i]) - (cs[j] + dx[j])).abs() <= sizes[i] + sizes[j])
-            {
-                collide(cs[i], vs[i], ms[i], cs[j], vs[j], ms[j], vit, vjt);
-                vs[i] = vit;
-                vs[j] = vjt;
-                dx[i] = Vect(0.0);
-                dx[j] = Vect(0.0);
-                dv[i] = Vect(0.0);
-                dv[j] = Vect(0.0);
-            }
-        }
+        cal_collide_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE, i); 
+
     }
+
+    struct timeval t_after_grav;
+    gettimeofday(&t_after_grav, NULL);
+
+    double   time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
+    
      /* End of Cal collide */
     // cal_gravity_kernel<<<dimGrid, dimBlock>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE);
     cudaMemcpy(dv, dv_d, floats_size, cudaMemcpyDeviceToHost);
     cudaMemcpy(dx, dx_d, floats_size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(vs, vs_d, vects_size, cudaMemcpyDeviceToHost);
 
     cudaFree(cs_d);
     cudaFree(vs_d);
@@ -219,8 +252,10 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
 
     double   time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
     
-    printf("calculate gravity and collide: %f ms\n", (time_after_coll - time_start));
     
+    printf("calculate gravity: %f ms\n", (time_after_grav - time_start));
+    printf("calculate collide: %f ms\n", (time_after_coll - time_after_grav));
+
 
     for (i = 0; i < n; i++)
     {
