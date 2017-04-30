@@ -45,7 +45,7 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
 
     assert(*cs != NULL && *vs != NULL && *ms != NULL && *sizes != NULL && *dv != NULL && *dx != NULL);
     for(int i=0;i<n;i++)
-    {   w
+    {   
         fin>>(*cs)[i].x;
         fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>(*ms)[i];
         (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
@@ -151,7 +151,7 @@ void
 cal_collide_kernel(Vect * cs_d,Vect * vs_d,float* ms_d,float* sizes_d,Vect * dv_d,Vect *  dx_d,int n,int GRID_SIZE, int i) {
     int index = blockDim.x * blockIdx.x + threadIdx.x;
     if(index > i && index < n) {
-        if(((cs_d[i] + dx_d[i]) - (cs_d[index] + dx_d[index])).abs() <= sizes_d[i] + sizes_d[j]) {
+        if(((cs_d[i] + dx_d[i]) - (cs_d[index] + dx_d[index])).abs() <= sizes_d[i] + sizes_d[index]) {
             Vect vit, vjt;
             collide(cs_d[i], vs_d[i], ms_d[i], cs_d[index], vs_d[index], ms_d[index], vit, vjt);
             vs_d[i] = vit;
@@ -188,7 +188,7 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     gettimeofday(&t_start, NULL);
 
     double   time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
-    int i, j;
+    int i;
     /* Cal gravity */
 
     Vect *cs_d, *vs_d, *dv_d, *dx_d;
