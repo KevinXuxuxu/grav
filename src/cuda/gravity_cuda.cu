@@ -29,12 +29,6 @@ using namespace std;
 int n;
 long long T;
 
-// Vect* cs; //coordinates
-// Vect* vs; //velocity
-// float* ms; //mass
-// float* sizes;
-// Vect *dv, *dx;
-
 void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** dx)
 {
     ifstream fin("config.in");
@@ -133,11 +127,18 @@ __global__
 void
 cal_gravity_kernel(Vect * cs_d,Vect * vs_d,float* ms_d,float* sizes_d,Vect * dv_d,Vect *  dx_d,int n,int GRID_SIZE, int i) {
     int index = blockDim.x * blockIdx.x + threadIdx.x;
-
+    __shared__ Vect dv_s, dx_s;
+    dv_s = Vect(0.0f, 0.0f, 0.0f);
+    dx_s = Vect(0.0f, 0.0f, 0.0f);
+    __syncthreads()
     if(index < n && i != index) {
-        dv_d[i] += caldv(cs_d[i], vs_d[i], cs_d[index], vs_d[index], ms_d[index]);
-        dx_d[i] += vs_d[i] * dt + caldx(cs_d[i], vs_d[i], cs_d[index], vs_d[index], ms_d[index]);
+        dv_s += caldv(cs_d[i], vs_d[i], cs_d[index], vs_d[index], ms_d[index]);
+        dx_s += vs_d[i] * dt + caldx(cs_d[i], vs_d[i], cs_d[index], vs_d[index], ms_d[index]);
     }
+
+    __syncthreads();
+    dv_d[i] = dv_s;
+    dx_d[i] = dx_s;
 }
 
 void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx) {
@@ -171,8 +172,8 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     // dim3 dimGrid(GRID_SIZE, GRID_SIZE);
     int GRID_SIZE = (int)ceil((double)n / (double)NUM_THREADS_PER_BLOCK);
 
-    init_d_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(dx_d, n);
-    init_d_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(dv_d, n);
+    // init_d_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(dx_d, n);
+    // init_d_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(dv_d, n);
 
     for(int i = 0;i < n;i ++) {
         cal_gravity_kernel<<<GRID_SIZE, NUM_THREADS_PER_BLOCK>>>(cs_d, vs_d, ms_d, sizes_d, dv_d, dx_d, n, GRID_SIZE, i);   
@@ -228,68 +229,4 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
 
     
 }
-
-void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
-{
-    printf("****************iterate**********************\n");
-    struct timeval t_start;
-    gettimeofday(&t_start, NULL);
-
-    double	 time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
-    int i, j;
-    /* Cal gravity */
-    for (i = 0; i < n; i++)
-    {
-        dv[i] = Vect(0, 0, 0);
-        dx[i] = Vect(0, 0, 0);
-        for (j = 0; j < n; j++)
-        {
-            if(j!=i)
-            {
-                dv[i] += caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
-                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
-            }
-        }
-    }
-    /* End of Cal gravity */
-
-    struct timeval t_after_grav;
-    gettimeofday(&t_after_grav, NULL);
-
-    double	 time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
-    
-    /* Cal collide */
-    Vect vit, vjt;
-    for (i = 0; i < n; i++)
-        for (j = i + 1; j < n; j++)
-        {
-            if (((cs[i] + dx[i]) - (cs[j] + dx[j])).abs() <= sizes[i] + sizes[j])
-            {
-                collide(cs[i], vs[i], ms[i], cs[j], vs[j], ms[j], vit, vjt);
-                vs[i] = vit;
-                vs[j] = vjt;
-                dx[i] = Vect(0.0);
-                dx[j] = Vect(0.0);
-                dv[i] = Vect(0.0);
-                dv[j] = Vect(0.0);
-            }
-        }
-     /* End of Cal collide */
-    struct timeval t_after_coll;
-    gettimeofday(&t_after_coll, NULL);
-
-    double	 time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
-    
-    printf("calculate gravity: %f ms\n", (time_after_grav - time_start));
-    printf("calculate collide: %f ms\n", (time_after_coll - time_after_grav));
-
-    for (i = 0; i < n; i++)
-    {
-        cs[i] += dx[i];
-        vs[i] += dv[i];
-    }
-}
-
-
-
 #endif
