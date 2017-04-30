@@ -22,7 +22,7 @@
 
 struct Vect
 {
-    Vect()
+    CUDA_HOSTDEV Vect()
     {}
     CUDA_HOSTDEV Vect(float	 _x, float	 _y = 0.0, float	 _z = 0.0)
     :x(_x), y(_y), z(_z)
