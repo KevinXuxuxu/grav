@@ -1,3 +1,4 @@
 *.o
 main
 *.in
+.DS_Store
