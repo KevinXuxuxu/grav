@@ -24,7 +24,7 @@ struct Vect
 {
     Vect()
     {}
-    Vect(float	 _x, float	 _y = 0.0, float	 _z = 0.0)
+    CUDA_HOSTDEV Vect(float	 _x, float	 _y = 0.0, float	 _z = 0.0)
     :x(_x), y(_y), z(_z)
     {}
     union
