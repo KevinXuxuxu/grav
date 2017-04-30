@@ -9,6 +9,13 @@
 #ifndef vect_h
 #define vect_h
 
+#ifdef __CUDACC__
+#define CUDA_HOSTDEV __host__ __device__
+#include <cuda.h>
+#include <cuda_runtime.h>
+#else
+#define CUDA_HOSTDEV
+#endif
 
 #include <cmath>
 //#include <pmmintrin.h>
@@ -28,38 +35,38 @@ struct Vect
         };
         // float	 c[3];
     };
-    __host__ __device__ Vect operator +(Vect b) const
+    CUDA_HOSTDEV Vect operator +(Vect b) const
     {
         return Vect(x + b.x, y + b.y, z + b.z);
     }
-    __host__ __device__  Vect operator +=(Vect b)
+    CUDA_HOSTDEV  Vect operator +=(Vect b)
     {
         x += b.x;
         y += b.y;
         z += b.z;
         return *this;
     }
-    __host__ __device__  Vect operator -(Vect b) const
+    CUDA_HOSTDEV  Vect operator -(Vect b) const
     {
         return Vect(x - b.x, y - b.y, z - b.z);
     }
-   __host__ __device__  Vect operator *(float	 k) const
+   CUDA_HOSTDEV  Vect operator *(float	 k) const
     {
         return Vect(x * k, y * k, z * k);
     }
-    __host__ __device__ friend Vect operator *(float	 k, Vect v)
+    CUDA_HOSTDEV friend Vect operator *(float	 k, Vect v)
     {
         return Vect(v.x * k, v.y * k, v.z * k);
     }
-    __host__ __device__ Vect operator /(float	 k) const
+    CUDA_HOSTDEV Vect operator /(float	 k) const
     {
         return Vect(x / k, y / k, z / k);
     }
-    __host__ __device__ float	 operator &(Vect b) const
+    CUDA_HOSTDEV float	 operator &(Vect b) const
     {
         return x * b.x + y * b.y + z * b.z;
     }
-    __host__ __device__ float	 abs() const
+    CUDA_HOSTDEV float abs() const
     {
         return sqrt(x * x + y * y + z * z);
     }
