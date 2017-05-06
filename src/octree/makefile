@@ -10,7 +10,7 @@ SIMDFLAGS = -msse2 -msse3 -O2 -lm
 all: $(PROJ)
 
 $(PROJ): $(OBJS)
-		$(CC) $(OMPFLAGS) $(LDFLAGS) $^ -o $@ $(LIBS)
+		$(CC) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 %.o : %.cpp
 		$(CC) $(CFLAGS) $< -o $@ $(SIMDFLAGS)
