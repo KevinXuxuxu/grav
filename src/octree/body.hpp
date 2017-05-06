@@ -17,27 +17,33 @@ const float	 dt = 0.005;
 
 struct Force
 {
-    Vect f;
+    //Vect f;
     Vect dx, dv;
-    bool dxdv;
+    //bool dxdv;
+    bool col;
     Force();
-    Force(Vect _f);
-    Force(Vect _dx, Vect _dv);
-    Force operator +(Force b) const;
-    Force operator +=(Force);
-    Force operator *(float	 k) const;
-    friend Force operator *(float	 k, Force v);
-    Force operator /(float	 k) const;
+    //Force(Vect _f);
+    Force(Vect _dx, Vect _dv, bool _col);
+    Force operator +(Force &b) const;
+    Force &operator +=(const Force &);/*
+    Force operator *(float k) const;
+    friend Force operator *(float k, Force v);
+    Force operator /(float k) const;*/
+    void output() const;
 };
-struct BodyX
+struct Body
 {
     Vect c;//coordinates
     Vect v;//velocity
-    float	 m; //mass
-    float	 size;
-    BodyX();
-    BodyX(Vect _c, Vect _v, float	 _m);
+    float m; //mass
+    float size;
+    Body();
+    Body(Vect _c, Vect _v, float _m);
+    Body(Vect _c, Vect _v, float _m, float _size);
+    bool overlap(Body &b);
     void apply(Force f);
-    BodyX ifApply(Force f);
+    Body ifApply(Force f);
+    void output() const;
 };
-#endif /* body_hpp */
+
+#endif

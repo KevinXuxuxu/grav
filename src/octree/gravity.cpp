@@ -21,210 +21,149 @@
 
 
 #include "gravity.hpp"
+#include "octree.hpp"
 
 using namespace std;
 
 int n;
 long long T;
 
-// BodyX body[N];
-// Vect* cs; //coordinates
-// Vect* vs; //velocity
-// float* ms; //mass
-// float* sizes;
-// Vect *dv, *dx;
+Octree octree;
 
-void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** dx)
+// void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** dx)
+// {
+//     ifstream fin("config.in");
+//     char xx[N];
+//     fin>>xx>>xx>>xx>>n;
+//     fin>>xx>>T>>xx;
+//     printf("T: %lld\nn: %d\n", T, n);
+//     *cs = (Vect *) malloc(sizeof(Vect) * n);
+//     *vs = (Vect *) malloc(sizeof(Vect) * n);
+//     *ms = (float *) malloc(sizeof(float) * n);
+//     *sizes = (float *) malloc(sizeof(float) * n);
+//     *dv = (Vect *) malloc(sizeof(Vect) * n);
+//     *dx = (Vect *) malloc(sizeof(Vect) * n);
+
+//     assert(*cs != NULL && *vs != NULL && *ms != NULL && *sizes != NULL && *dv != NULL && *dx != NULL);
+//     for(int i=0;i<n;i++)
+//     {   
+//         fin>>(*cs)[i].x;
+//         fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>(*ms)[i];
+//         (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
+//     }
+// }
+
+void input(Body** body, Force** force)
 {
     ifstream fin("config.in");
     char xx[N];
     fin>>xx>>xx>>xx>>n;
     fin>>xx>>T>>xx;
     printf("T: %lld\nn: %d\n", T, n);
-    *cs = (Vect *) malloc(sizeof(Vect) * n);
-    *vs = (Vect *) malloc(sizeof(Vect) * n);
-    *ms = (float *) malloc(sizeof(float) * n);
-    *sizes = (float *) malloc(sizeof(float) * n);
-    *dv = (Vect *) malloc(sizeof(Vect) * n);
-    *dx = (Vect *) malloc(sizeof(Vect) * n);
 
-    assert(*cs != NULL && *vs != NULL && *ms != NULL && *sizes != NULL && *dv != NULL && *dx != NULL);
+    *body = new Body[n];
+    *force = new Force[n];
+
+    assert(*body != NULL && *force != NULL);
+
     for(int i=0;i<n;i++)
-    {   
-        fin>>(*cs)[i].x;
-        fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>(*ms)[i];
-        (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
+    {
+        fin>>(*body)[i].c.x>>(*body)[i].c.y>>(*body)[i].c.z>>(*body)[i].v.x>>(*body)[i].v.y>>(*body)[i].v.z>>(*body)[i].m;
+        (*body)[i].size = 0.2 * pow((*body)[i].m, 1.0/3.0);
     }
 }
 
-
-
-void collide(const Vect &a_c, const Vect &a_v, float a_m, 
-    const Vect &b_c, const Vect &b_v, float b_m, 
-    Vect &vat, Vect &vbt)
+void collide(const Body &a, const Body &b, Vect &vat, Vect &vbt)
 {
-    Vect e = a_c - b_c;
+    Vect e = a.c - b.c;
     e = e / e.abs();
-    float	 A, B;
-    A = a_v & e;
-    B = b_v & e;
+    float A, B;
+    A = a.v & e;
+    B = b.v & e;
     Vect ar, br;
-    ar = a_v - A * e;
-    br = b_v - B * e;
-    float	 Al, Bl;
-    Al = (A * (a_m - b_m) + 2 * b_m * B) / (a_m + b_m);
-    Bl = (B * (b_m - a_m) + 2 * a_m * A) / (a_m + b_m);
+    ar = a.v - A * e;
+    br = b.v - B * e;
+    float Al, Bl;
+    Al = (A * (a.m - b.m) + 2 * b.m * B) / (a.m + b.m);
+    Bl = (B * (b.m - a.m) + 2 * a.m * A) / (a.m + b.m);
     vat = ar + Al * e;
     vbt = br + Bl * e;
 }
-/* impulse of a on b */
-Vect caldv(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m)
-{
-    Vect dx = a_c - b_c;
-    Vect dv = a_v - b_v;
-    float	 r = dx.abs();
-    return G * a_m * (
-                      dx / (r * r * r) * dt +
-                      1.0 / 2.0 * dv / (r * r * r) * dt * dt +
-                      3.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt
-                      );
-}
-/* impulse of a on b */
-Vect caldx(const Vect &b_c,const  Vect &b_v,const Vect &a_c, const Vect &a_v, const  float a_m) 
-{
-    Vect dx = a_c - b_c;
-    Vect dv = a_v - b_v;
-    float	 r = dx.abs();
-    return G * a_m * (
-                      1.0 / 2.0 * dx / (r * r * r) * dt * dt +
-                      1.0 / 6.0 * dv / (r * r * r) * dt * dt * dt +
-                      1.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt * dt
-                      );
-}
 
-void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx) {
-printf("****************iterate**********************\n");
-    struct timeval t_start;
-    gettimeofday(&t_start, NULL);
-
-    double   time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
-    int i, j;
-    /* Cal gravity */
-    for (i = 0; i < n; i++)
+Vect caldv(Body b, Body a) //impulse of a on b
+{
+    Vect dx = a.c - b.c;
+    Vect dv = a.v - b.v;
+    float r = dx.abs();
+    return G * a.m * (
+        dx / (r * r * r) * dt +
+        1.0 / 2.0 * dv / (r * r * r) * dt * dt +
+        3.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt
+        );
+}
+Vect caldx(Body b, Body a) //impulse of a on b
+{
+    Vect dx = a.c - b.c;
+    Vect dv = a.v - b.v;
+    float r = dx.abs();
+    return G * a.m * (
+        1.0 / 2.0 * dx / (r * r * r) * dt * dt +
+        1.0 / 6.0 * dv / (r * r * r) * dt * dt * dt +
+        1.0 / 2.0 * (dx & dv) * dx / (r * r * r * r * r) * dt * dt * dt
+        );
+}
+Force calForce2(const Body &a, Body b)
+{
+    if ((a.c - b.c).abs() == 0.0)
+        return Force(0, 0, false);
+    Force f = Force(caldx(a, b), caldv(a, b), false);
+    if (isnan(f.dx.x) || isnan(f.dv.x))
     {
-        dv[i] = Vect(0, 0, 0);
-        dx[i] = Vect(0, 0, 0);
-        for (j = 0; j < n; j++)
-        {
-            if(j!=i)
-            {
-                dv[i] += caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
-                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
-            }
-        }
+        printf("NAN Force!!!\n");
+        a.output();
+        b.output();
+        while (1);
     }
-    /* End of Cal gravity */
-
-    struct timeval t_after_grav;
-    gettimeofday(&t_after_grav, NULL);
-
-    double   time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
-    
-    /* Cal collide */
-    Vect vit, vjt;
-    for (i = 0; i < n; i++)
-        for (j = i + 1; j < n; j++)
-        {
-            if (((cs[i] + dx[i]) - (cs[j] + dx[j])).abs() <= sizes[i] + sizes[j])
-            {
-                collide(cs[i], vs[i], ms[i], cs[j], vs[j], ms[j], vit, vjt);
-                vs[i] = vit;
-                vs[j] = vjt;
-                dx[i] = Vect(0.0);
-                dx[j] = Vect(0.0);
-                dv[i] = Vect(0.0);
-                dv[j] = Vect(0.0);
-            }
-        }
-     /* End of Cal collide */
-    struct timeval t_after_coll;
-    gettimeofday(&t_after_coll, NULL);
-
-    double   time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
-    
-    printf("calculate gravity: %f ms\n", (time_after_grav - time_start));
-    printf("calculate collide: %f ms\n", (time_after_coll - time_after_grav));
-
-    for (i = 0; i < n; i++)
-    {
-        cs[i] += dx[i];
-        vs[i] += dv[i];
-    }
-
-    
+    return Force(caldx(a, b), caldv(a, b), false);
 }
 
-void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
-{
+void iterateOctree(int iteration) {
     printf("****************iterate**********************\n");
     struct timeval t_start;
     gettimeofday(&t_start, NULL);
 
-    double	 time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
-    int i, j;
-    /* Cal gravity */
-    for (i = 0; i < n; i++)
+    double   time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
+
+    //build the octree
+    octree.build(body, n, OctreeThreshold);
+
+    for (int i = 0; i < n; i++)
     {
-        dv[i] = Vect(0, 0, 0);
-        dx[i] = Vect(0, 0, 0);
-        for (j = 0; j < n; j++)
-        {
-            if(j!=i)
-            {
-                dv[i] += caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
-                dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
-            }
-        }
+        force[i] = octree.query(body[i]);
+        // printf("force[%d] = ", i);
+        // force[i].output();
     }
-    /* End of Cal gravity */
 
-    struct timeval t_after_grav;
-    gettimeofday(&t_after_grav, NULL);
+    struct timeval t_after;
+    gettimeofday(&t_after, NULL);
 
-    double	 time_after_grav = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
-    
-    /* Cal collide */
-    Vect vit, vjt;
-    for (i = 0; i < n; i++)
-        for (j = i + 1; j < n; j++)
-        {
-            if (((cs[i] + dx[i]) - (cs[j] + dx[j])).abs() <= sizes[i] + sizes[j])
-            {
-                collide(cs[i], vs[i], ms[i], cs[j], vs[j], ms[j], vit, vjt);
-                vs[i] = vit;
-                vs[j] = vjt;
-                dx[i] = Vect(0.0);
-                dx[j] = Vect(0.0);
-                dv[i] = Vect(0.0);
-                dv[j] = Vect(0.0);
-            }
-        }
-     /* End of Cal collide */
-    struct timeval t_after_coll;
-    gettimeofday(&t_after_coll, NULL);
+    double   time_after = (t_after.tv_sec) * 1000 + (t_after.tv_usec) / 1000 ; 
 
-    double	 time_after_coll = (t_after_coll.tv_sec) * 1000 + (t_after_coll.tv_usec) / 1000 ; 
-    
-    printf("calculate gravity: %f ms\n", (time_after_grav - time_start));
-    printf("calculate collide: %f ms\n", (time_after_coll - time_after_grav));
+    printf("calculate total: %f ms\n", (time_after - time_start));
 
-    for (i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
-        cs[i] += dx[i];
-        vs[i] += dv[i];
+        body[i].apply(force[i]);
+    }
+
+    // destroy the octree
+    octree.destroy();
+
+    if (iteration == 1)
+    {
+        octree.destroyAux();
     }
 }
-
 
 
 #endif

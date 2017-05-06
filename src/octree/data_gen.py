@@ -10,7 +10,7 @@ def dist(x1, y1, z1, x2, y2, z2):
 def main():
     fout = open("config.in",'w')
     a = float(sys.argv[1])
-    n = int(1000 * a)
+    n = int(1 * a)
     duration = 160000
     fout.write("Number of objects: %d\nDuration: %d (s)\n\n" %(n, duration))
     bodys = []
