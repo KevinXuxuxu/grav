@@ -16,6 +16,7 @@ def main():
     bodys = []
     V = 0.1
     P = 10 * (a ** 0.333)
+    k = 0
     for i in range(n):
         x, y, z = get_rand(P), get_rand(P), get_rand(P)
         vx, vy, vz = get_rand(V), get_rand(V), get_rand(V)
@@ -32,6 +33,15 @@ def main():
             continue
         bodys.append((x, y, z, r))
         fout.write("%f %f %f\n%f %f %f\n%f\n\n" %(x, y, z, vx, vy, vz, m))
+        k += 1
+    while k < n:
+        x, y, z = get_rand(P), get_rand(P), get_rand(P)
+        vx, vy, vz = get_rand(V), get_rand(V), get_rand(V)
+        m = 0.2 * random()
+        r = 0.2 * (m ** (1/3.))
+        bodys.append((x, y, z, r))
+        fout.write("%f %f %f\n%f %f %f\n%f\n\n" %(x, y, z, vx, vy, vz, m))
+        k++
     fout.close()
 
 if __name__ == "__main__":
