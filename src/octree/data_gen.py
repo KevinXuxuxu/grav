@@ -20,6 +20,7 @@ def main():
     xc = [0,0,0,0,1,1,1,1]
     yc = [0,0,1,1,0,0,1,1]
     zc = [0,1,0,1,0,1,0,1]
+    k = 0
     for j in range(8):
         for i in range(n):
             x, y, z = gd*xc[j] + get_rand(P), gd*yc[j] + get_rand(P), gd*zc[j] + get_rand(P)
@@ -31,12 +32,21 @@ def main():
                 if r + R >= dist(x, y, z, X, Y, Z):
                     print "boooom"
                     flag = True
-                    break
             if flag:
                 i -= 1
                 continue
+            k += 1
             bodys.append((x, y, z, r))
             fout.write("%f %f %f\n%f %f %f\n%f\n\n" %(x, y, z, vx, vy, vz, m))
+    while k < 8*n:
+        x, y, z = get_rand(P*10), get_rand(P*10), get_rand(P*10)
+        vx, vy, vz = get_rand(V), get_rand(V), get_rand(V)
+        m = 0.2 * random()
+        r = 0.2 * (m ** (1/3.))
+        bodys.append((x, y, z, r))
+        fout.write("%f %f %f\n%f %f %f\n%f\n\n" %(x, y, z, vx, vy, vz, m))
+        k+=1
+
     fout.close()
 
 if __name__ == "__main__":
