@@ -16,7 +16,7 @@
 
 const float	 G = 1.73205;
 const int N = 8000;
-const float OctreeThreshold = 0.01;
+const float OctreeThreshold = 0.05;
 
 extern int n;
 extern long long T;
