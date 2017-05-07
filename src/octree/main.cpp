@@ -33,7 +33,7 @@ Force* force;
 int main(int argc, const char * argv[]) {
     // input(&cs, &vs, &ms, &sizes, &dv, &dx);
     input(&body, &force);
-    int n = 4;
+    int n = 6;
     while(n>0) {
         // iterate2(cs, vs, ms, sizes, dv, dx);
         iterateOctree(n);

@@ -58,40 +58,57 @@ struct OctreeNode
 	void expandChildren()
 	{
 		unsigned i;
-		for (i = 0; i < 8; i++)
-			ch[i] = new OctreeNode;
+		
 		for (i = 0; i < 8; i++)
 		{
-			if ((i & 1) == 0)
+			// if ((i & 1) == 0)
+			// {
+			// 	ch[i]->sl.x = sl.x;
+			// 	ch[i]->sr.x = (sl.x + sr.x) / 2.0;
+			// }
+			// else
+			// {
+			// 	ch[i]->sl.x = (sl.x + sr.x) / 2.0;
+			// 	ch[i]->sr.x = sr.x;
+			// }
+			// if ((i & 2) == 0)
+			// {
+			// 	ch[i]->sl.y = sl.y;
+			// 	ch[i]->sr.y = (sl.y + sr.y) / 2.0;
+			// }
+			// else
+			// {
+			// 	ch[i]->sl.y = (sl.y + sr.y) / 2.0;
+			// 	ch[i]->sr.y = sr.y;
+			// }
+			// if ((i & 4) == 0)
+			// {
+			// 	ch[i]->sl.z = sl.z;
+			// 	ch[i]->sr.z = (sl.z + sr.z) / 2.0;
+			// }
+			// else
+			// {
+			// 	ch[i]->sl.z = (sl.z + sr.z) / 2.0;
+			// 	ch[i]->sr.z = sr.z;
+			// }
+
+			// find the child's real sl and sr
+			Body* body_ch = ch[i]->body;
+			int bodyn_ch = ch[i]->bodyn;
+			Vect sl_ch = body_ch[0].c;
+			Vect sr_ch = body_ch[0].c;
+			
+			for (int j = 1; j < bodyn_ch; j++)
 			{
-				ch[i]->sl.x = sl.x;
-				ch[i]->sr.x = (sl.x + sr.x) / 2.0;
+				sl_ch.x = body_ch[j].c.x < sl_ch.x ? body_ch[j].c.x : sl_ch.x;
+				sl_ch.y = body_ch[j].c.y < sl_ch.y ? body_ch[j].c.y : sl_ch.y;
+				sl_ch.z = body_ch[j].c.z < sl_ch.z ? body_ch[j].c.z : sl_ch.z;
+				sr_ch.x = body_ch[j].c.x > sr_ch.x ? body_ch[j].c.x : sr_ch.x;
+				sr_ch.y = body_ch[j].c.y > sr_ch.y ? body_ch[j].c.y : sr_ch.y;
+				sr_ch.z = body_ch[j].c.z > sr_ch.z ? body_ch[j].c.z : sr_ch.z;
 			}
-			else
-			{
-				ch[i]->sl.x = (sl.x + sr.x) / 2.0;
-				ch[i]->sr.x = sr.x;
-			}
-			if ((i & 2) == 0)
-			{
-				ch[i]->sl.y = sl.y;
-				ch[i]->sr.y = (sl.y + sr.y) / 2.0;
-			}
-			else
-			{
-				ch[i]->sl.y = (sl.y + sr.y) / 2.0;
-				ch[i]->sr.y = sr.y;
-			}
-			if ((i & 4) == 0)
-			{
-				ch[i]->sl.z = sl.z;
-				ch[i]->sr.z = (sl.z + sr.z) / 2.0;
-			}
-			else
-			{
-				ch[i]->sl.z = (sl.z + sr.z) / 2.0;
-				ch[i]->sr.z = sr.z;
-			}
+			ch[i]->sl = sl_ch;
+			ch[i]->sr = sr_ch;
 			//printf("parent (%.2lf,%.2lf,%.2lf) (%.2lf,%.2lf,%.2lf)\n", sl.x, sl.y, sl.z, sr.x, sr.y, sr.z);
 			//printf("chile%d (%.2lf,%.2lf,%.2lf) (%.2lf,%.2lf,%.2lf)\n", i, ch[i]->sl.x, ch[i]->sl.y, ch[i]->sl.z, ch[i]->sr.x, ch[i]->sr.y, ch[i]->sr.z);
 		}
@@ -106,10 +123,12 @@ struct OctreeNode
 	}
 	void distributeBodies()
 	{
-		expandChildren();
-		
 		int i;
 		int cnt[9] = {0};
+
+		for (i = 0; i < 8; i++)
+			ch[i] = new OctreeNode;
+
 		for (i = 0; i < bodyn; i++)
 			cnt[inChild(body[i])]++;
 		for (i = 1; i < 8; i++)
@@ -124,6 +143,8 @@ struct OctreeNode
 			ch[i]->body = body + cnt[i];
 			ch[i]->bodyn = cnt[i + 1] - cnt[i];
 		}
+
+		expandChildren();
 	}
 };
 
