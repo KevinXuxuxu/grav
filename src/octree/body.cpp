@@ -13,38 +13,21 @@ Force::Force()
 {}
 Force::Force(Vect _dx, Vect _dv, bool _col = false)
     :dx(_dx), dv(_dv), col(_col)
-{/*
-    if (isnan(dx.x) || isnan(dv.x))
-    {
-        dx = 0;
-        dv = 0;
-        printf("NAN Force!!!\n");
-    }*/
-}
+{}
 Force Force::operator +(Force &b) const
-{/*
-    if (col)
-        return *this;
-    if (b.col)
-        return b;*/
+{
     return Force(dx + b.dx, dv + b.dv, false);
 }
 Force &Force::operator +=(const Force &b)
 {
-    //if (col)
-    //  return *this;
     dx += b.dx;
     dv += b.dv;
-    //if (b.col)
-    //  *this = b;
+
     return *this;
 }
 void Force::output() const
 {
-    //if (dxdv)
-        printf("Force (%.2lg, %.2lg, %.2lg) (%.2lg, %.2lg, %.2lg) col %d\n", dv.x, dv.y, dv.z, dx.x, dx.y, dx.z, (int)col);
-    //else
-    //  printf("Force (%.2lf, %.2lf, %.2lf)\n", f.x, f.y, f.z);
+    printf("Force (%.2lg, %.2lg, %.2lg) (%.2lg, %.2lg, %.2lg) col %d\n", dv.x, dv.y, dv.z, dx.x, dx.y, dx.z, (int)col);
 }
 
 Body::Body()

@@ -17,18 +17,12 @@ const float	 dt = 0.005;
 
 struct Force
 {
-    //Vect f;
     Vect dx, dv;
-    //bool dxdv;
     bool col;
     Force();
-    //Force(Vect _f);
     Force(Vect _dx, Vect _dv, bool _col);
     Force operator +(Force &b) const;
-    Force &operator +=(const Force &);/*
-    Force operator *(float k) const;
-    friend Force operator *(float k, Force v);
-    Force operator /(float k) const;*/
+    Force &operator +=(const Force &);
     void output() const;
 };
 struct Body

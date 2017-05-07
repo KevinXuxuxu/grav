@@ -30,29 +30,6 @@ long long T;
 
 Octree octree;
 
-// void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** dx)
-// {
-//     ifstream fin("config.in");
-//     char xx[N];
-//     fin>>xx>>xx>>xx>>n;
-//     fin>>xx>>T>>xx;
-//     printf("T: %lld\nn: %d\n", T, n);
-//     *cs = (Vect *) malloc(sizeof(Vect) * n);
-//     *vs = (Vect *) malloc(sizeof(Vect) * n);
-//     *ms = (float *) malloc(sizeof(float) * n);
-//     *sizes = (float *) malloc(sizeof(float) * n);
-//     *dv = (Vect *) malloc(sizeof(Vect) * n);
-//     *dx = (Vect *) malloc(sizeof(Vect) * n);
-
-//     assert(*cs != NULL && *vs != NULL && *ms != NULL && *sizes != NULL && *dv != NULL && *dx != NULL);
-//     for(int i=0;i<n;i++)
-//     {   
-//         fin>>(*cs)[i].x;
-//         fin>>(*cs)[i].y>>(*cs)[i].z>>(*vs)[i].x>>(*vs)[i].y>>(*vs)[i].z>>(*ms)[i];
-//         (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
-//     }
-// }
-
 void input(Body** body, Force** force)
 {
     ifstream fin("config.in");

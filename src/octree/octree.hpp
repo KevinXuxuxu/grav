@@ -61,37 +61,6 @@ struct OctreeNode
 		
 		for (i = 0; i < 8; i++)
 		{
-			// if ((i & 1) == 0)
-			// {
-			// 	ch[i]->sl.x = sl.x;
-			// 	ch[i]->sr.x = (sl.x + sr.x) / 2.0;
-			// }
-			// else
-			// {
-			// 	ch[i]->sl.x = (sl.x + sr.x) / 2.0;
-			// 	ch[i]->sr.x = sr.x;
-			// }
-			// if ((i & 2) == 0)
-			// {
-			// 	ch[i]->sl.y = sl.y;
-			// 	ch[i]->sr.y = (sl.y + sr.y) / 2.0;
-			// }
-			// else
-			// {
-			// 	ch[i]->sl.y = (sl.y + sr.y) / 2.0;
-			// 	ch[i]->sr.y = sr.y;
-			// }
-			// if ((i & 4) == 0)
-			// {
-			// 	ch[i]->sl.z = sl.z;
-			// 	ch[i]->sr.z = (sl.z + sr.z) / 2.0;
-			// }
-			// else
-			// {
-			// 	ch[i]->sl.z = (sl.z + sr.z) / 2.0;
-			// 	ch[i]->sr.z = sr.z;
-			// }
-
 			// find the child's real sl and sr
 			Body* body_ch = ch[i]->body;
 			int bodyn_ch = ch[i]->bodyn;
