@@ -41,7 +41,7 @@ def main():
         r = 0.2 * (m ** (1/3.))
         bodys.append((x, y, z, r))
         fout.write("%f %f %f\n%f %f %f\n%f\n\n" %(x, y, z, vx, vy, vz, m))
-        k++
+        k += 1
     fout.close()
 
 if __name__ == "__main__":
