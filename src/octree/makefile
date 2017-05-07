@@ -3,7 +3,7 @@ CC = g++
 
 CFLAGS = -c -g -Wall -I/opt/local/include
 LDFLAGS = -L/opt/local/lib
-LIBS = -lcppunit -ldl
+LIBS = -ldl
 OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 SIMDFLAGS = -msse2 -msse3 -O2 -lm
 
