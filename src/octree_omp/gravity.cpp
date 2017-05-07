@@ -22,6 +22,7 @@
 
 #include "gravity.hpp"
 #include "octree.hpp"
+#include <omp.h>
 
 using namespace std;
 
@@ -114,6 +115,7 @@ void iterateOctree(int iteration) {
     //build the octree
     octree.build(body, n, OctreeThreshold);
 
+    #pragma omp parallel for
     for (int i = 0; i < n; i++)
     {
         force[i] = octree.query(body[i]);
