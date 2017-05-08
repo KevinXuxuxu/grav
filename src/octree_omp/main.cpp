@@ -28,7 +28,7 @@ Force* force;
 int main(int argc, const char * argv[]) {
 
     input(&body, &force);
-    int n = 6;
+    int n = 4;
     while(n>0) {
         iterateOctree(n);
         n--;
