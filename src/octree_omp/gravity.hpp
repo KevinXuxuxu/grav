@@ -15,7 +15,7 @@
 #include "body.hpp"
 
 const float	 G = 1.73205;
-const int N = 8000;
+const int N = 16000;
 const float OctreeThreshold = 0.05;
 
 extern int n;
