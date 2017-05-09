@@ -1,4 +1,4 @@
-Multi-body Gravity System Simulation
+# Multi-body Gravity System Simulation
 > 18645 term project
 > Fangzhou Xu (fangzhox) / Yuhao Xu (yuhaox1) / Shuang Chen (shuangc)
 
