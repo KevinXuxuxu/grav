@@ -30,12 +30,6 @@ using namespace std;
 int n;
 long long T;
 
-// BodyX body[N];
-// Vect* cs; //coordinates
-// Vect* vs; //velocity
-// float* ms; //mass
-// float* sizes;
-// Vect *dv, *dx;
 
 void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** dx)
 {
@@ -59,19 +53,6 @@ void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Vect ** d
         (*sizes)[i] = 0.2 * pow((*ms)[i], 1.0/3.0);
     }
 }
-// Force calForce(const BodyX &a, BodyX b)
-// {
-//     Force f;
-//     float	 r2 = (a.c - b.c) & (a.c - b.c);
-//     float	 r = (a.c - b.c).abs();
-//     if (r == 0.0)
-//         return Force(0);
-//     f = (b.c - a.c) / r * (G * a.m * b.m / r2);
-//     //printf("Force (%.2lf, %.2lf, %.2lf)\n", f.x, f.y, f.z);
-//     return f;
-// }
-// Vect dv[N], dx[N];
-
 
 void collide(const Vect &a_c, const Vect &a_v, float a_m, 
     const Vect &b_c, const Vect &b_v, float b_m, 
@@ -125,25 +106,16 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
     gettimeofday(&t_start, NULL);
     double   time_start = (t_start.tv_sec) * 1000 + (t_start.tv_usec) / 1000 ; 
 
-    /* Cal gravity */
-    // {
-        // printf("th #%d: from %d to %d\n", id, start, end);
-
-    // #pragma omp parallel for
     for (i = 0; i < n; i++)
-    // for(i = 0; i < n; i++)
     {
-        // dv[i] = Vect(0, 0, 0);
-        // dx[i] = Vect(0, 0, 0);
         float vx = 0, vy = 0, vz = 0, xx = 0, xy = 0, xz = 0;
 
-        #pragma omp parallel for reduction(+: vx, vy, vz, xx, xy, xz)// shared (cs, vs, ms)
+        #pragma omp parallel for reduction(+: vx, vy, vz, xx, xy, xz)
+            // shared (cs, vs, ms)
         for (j = 0; j < n; j++)
         {
             if(j!=i)
             {
-                // dv[i] += caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
-                // dx[i] += vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
                 Vect ddv = caldv(cs[i], vs[i], cs[j], vs[j], ms[j]);
                 Vect ddx = vs[i] * dt + caldx(cs[i], vs[i], cs[j], vs[j], ms[j]);
                 vx += ddv.x;
@@ -157,12 +129,6 @@ void iterate2(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *dx)
         dv[i] = Vect(vx, vy, vz);
         dx[i] = Vect(xx, xy, xz);
     }
-
-        // struct timeval t_after_grav;
-        // gettimeofday(&t_after_grav, NULL);
-        // double   time_g = (t_after_grav.tv_sec) * 1000 + (t_after_grav.tv_usec) / 1000 ; 
-        // printf("calculate gravity th # %d: %f ms\n", id, time_g - time_start);
-    // }
     /* End of Cal gravity */
 
     struct timeval t_after_grav;
