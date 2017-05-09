@@ -1,20 +1,19 @@
 PROJ = main
 CC = g++
 
-CFLAGS = -c -g -Wall -I/opt/local/include -I$(HOME)/cppunit/include
-LDFLAGS = -L/opt/local/lib -L$(HOME)/cppunit/lib
-LIBS = -lcppunit -ldl
+CFLAGS = -c -g -Wall -I/opt/local/include
+LDFLAGS = -L/opt/local/lib
+LIBS = -ldl
 OBJS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
-OMPFLAGS = -fopenmp
 SIMDFLAGS = -msse2 -msse3 -O2 -lm
 
 all: $(PROJ)
 
 $(PROJ): $(OBJS)
-		$(CC) $(OMPFLAGS) $(LDFLAGS) $^ -o $@ $(LIBS)
+		$(CC) $(LDFLAGS) $^ -o $@ $(LIBS)
 
 %.o : %.cpp
-		$(CC) $(CFLAGS) $< -o $@ $(SIMDFLAGS) $(OMPFLAGS)
+		$(CC) $(CFLAGS) $< -o $@ $(SIMDFLAGS)
 
 %.o : %.cpp %.h
 		$(CC) $(CFLAGS) $< -o $@ $(SIMDFLAGS)
