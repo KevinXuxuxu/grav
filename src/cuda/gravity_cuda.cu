@@ -123,7 +123,7 @@ cal_gravity_kernel(Vect * cs_d,Vect * vs_d,float* ms_d,float* sizes_d,Vect * dv_
     cs_d_i = cs_d[i];
     vs_d_i = vs_d[i];
     dt_s = dt;
-    __syncthreads();
+    __syncthreads(); // 
     if(index < n && i != index) {
         dv_s += caldv(cs_d_i, vs_d_i, cs_d[index], vs_d[index], ms_d[index]);
         dx_s += vs_d_i * dt_s + caldx(cs_d_i, vs_d_i, cs_d[index], vs_d[index], ms_d[index]);
@@ -182,9 +182,7 @@ void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes, Vect *dv, Vect *d
     cudaMalloc((void**) &dv_d, floats_size);
     cudaMalloc((void**) &dx_d, floats_size);
 
-    // dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
-    // int GRID_SIZE = (int)ceil((double)n / (double)BLOCK_SIZE);
-    // dim3 dimGrid(GRID_SIZE, GRID_SIZE);
+    
     int GRID_SIZE = (int)ceil((double)n / (double)NUM_THREADS_PER_BLOCK);
 
     for(int i = 0;i < n;i ++) {
