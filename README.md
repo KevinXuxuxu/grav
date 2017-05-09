@@ -6,6 +6,8 @@
 
 Multi-body gravity system is a major problem in the field of Mechanics and Astrophysics. Simulations of this kind of system requires tracking multiple physical values (position, velocity, mass) of each body and calculating gravity interactions between each pair of bodies. Using basic mechanics principles, we can calculate the displacement of each body at each frame.
 
+You may see the demo [video](https://youtu.be/LfZ8EKnjbqY).
+
 ### code structure
 
 All source codes are in the `src` folder. In the folder, each version of code (with different optimization method) is contained in the correspondent folder.
