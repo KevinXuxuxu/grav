@@ -3,7 +3,7 @@
 //  grav
 //
 //  Created by XuFangzhou on 17/3/28.
-//  Copyright © 2017年 XuFangzhou. All rights reserved.
+//  Copyright © 2017 XuFangzhou. All rights reserved.
 //
 
 #ifndef gravity_hpp
