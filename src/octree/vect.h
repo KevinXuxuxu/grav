@@ -26,7 +26,6 @@ struct Vect
         {
             float	 x, y, z;
         };
-        // float	 c[3];
     };
     Vect operator +(Vect b) const
     {
@@ -68,9 +67,5 @@ struct Vect
         return *this / abs();
     }
 };
-//float	 dotProduct(Vect a, Vect b)
-//{
-//    return a.x * b.x + a.y * b.y + a.z * b.z;
-//}
 
 #endif /* vect_h */

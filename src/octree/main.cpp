@@ -7,14 +7,7 @@
 //
 
 #include <iostream>
-
-
-// #include <GLUT/glut.h>
-// #include <OpenGL/gl.h>
-//#include <GL/glut.h>
-
 #include <cstdio>
-
 #include "gravity.hpp"
 
 const int SamplingTimer = 1;
