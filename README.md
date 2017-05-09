@@ -16,23 +16,27 @@ All source codes are in the `src` folder. In the folder, each version of code (w
 
 - Data generate: use the Python program `data_gen.py` in each folder to generate random input data for test run.
     - for `octree` and `octree_omp`: pass parameter n into python program
-    ```
-    python data_gen.py <n>
-    ```
+    
+        ```
+        python data_gen.py <n>
+        ```
     this will generate `8000 * n` number of bodies in `config.in` file.
     - for other versions: pass parameter n into python program
-    ```
-    python data_gen.py <n>
-    ```
+    
+        ```
+        python data_gen.py <n>
+        ```
     this will generate `1000 * n` number of bodies in `config.in` file.
 
 - Compile and run:
     - compile code by running the flowing shell command in the source code folder:
-    ```
-    make clean
-    make
-    ```
+    
+        ```
+        make clean
+        make
+        ```
     this will generate an executable file `main` which will read input from `config.in` and run the simulation.
-    ```
-    ./main
-    ```
+    
+        ```
+        ./main
+        ```
