@@ -27,9 +27,9 @@ struct Force
 };
 struct Body
 {
-    Vect c;//coordinates
-    Vect v;//velocity
-    float m; //mass
+    Vect c;     //coordinates
+    Vect v;     //velocity
+    float m;    //mass
     float size;
     Body();
     Body(Vect _c, Vect _v, float _m);

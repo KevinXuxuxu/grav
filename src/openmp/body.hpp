@@ -31,8 +31,8 @@ struct Force
 };
 struct BodyX
 {
-    Vect c;//coordinates
-    Vect v;//velocity
+    Vect c;     //coordinates
+    Vect v;     //velocity
     float	 m; //mass
     float	 size;
     BodyX();

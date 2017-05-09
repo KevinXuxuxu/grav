@@ -117,8 +117,6 @@ void iterateOctree(int iteration) {
     for (int i = 0; i < n; i++)
     {
         force[i] = octree.query(body[i]);
-        // printf("force[%d] = ", i);
-        // force[i].output();
     }
 
     struct timeval t_after;

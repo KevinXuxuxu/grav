@@ -78,8 +78,6 @@ struct OctreeNode
 			}
 			ch[i]->sl = sl_ch;
 			ch[i]->sr = sr_ch;
-			//printf("parent (%.2lf,%.2lf,%.2lf) (%.2lf,%.2lf,%.2lf)\n", sl.x, sl.y, sl.z, sr.x, sr.y, sr.z);
-			//printf("chile%d (%.2lf,%.2lf,%.2lf) (%.2lf,%.2lf,%.2lf)\n", i, ch[i]->sl.x, ch[i]->sl.y, ch[i]->sl.z, ch[i]->sr.x, ch[i]->sr.y, ch[i]->sr.z);
 		}
 	}
 	unsigned inChild(const Body &b)
@@ -127,7 +125,6 @@ public:
 		theta = _theta;
 		if (n <= 0)
 		{
-			//printf("Octree::build: n = %d\n", n);
 			return;
 		}
 
@@ -188,7 +185,6 @@ private:
 			r->cv = 0;
 			return;
 		}
-		//printf("build (%.2lf,%.2lf,%.2lf) (%.2lf,%.2lf,%.2lf) body: %d\n", r->sl.x, r->sl.y, r->sl.z, r->sr.x, r->sr.y, r->sr.z, n);
 		if (r->bodyn == 1)
 		{
 			r->cm = r->body[0].c;
@@ -209,7 +205,6 @@ private:
 	void recursiveDestroy(OctreeNode *r)
 	{
 		int i;
-		//printf("destroy %X (%.2lf,%.2lf,%.2lf) (%.2lf,%.2lf,%.2lf)\n", (unsigned)r, r->sl.x, r->sl.y, r->sl.z, r->sr.x, r->sr.y, r->sr.z);
 		for (i = 0; i < 8; i++)
 			if (r->ch[i])
 				recursiveDestroy(r->ch[i]);
@@ -222,20 +217,17 @@ private:
 		bool col = body.size + r->size() > (body.c - r->cm).abs(); //collision test
 		bool far = r->size() / (body.c - r->cm).abs() < theta; //far enough
 		bool sing = r->ch[0] == 0; //single body
-		//col = false;
+
 		if (sing && col)
 		{
 			float dist;
 			if ((body.c - r->body[0].c).abs() != 0.0)
 			{
 				dist = (body.c - r->body[0].c).abs() - (body.size + r->body[0].size);
-				//printf("collision test between %lX,%lX dist=%lf-%lf=%lf\n", (unsigned long)&body, (unsigned long)&r->body[i], (body.c - r->body[i].c).abs(), (body.size + r->body[i].size), dist);
 				if (dist < 0)
 				{
 					Vect vat, vbt;
 					collide(body, r->body[0], vat, vbt);
-					//assuming no collisions happen simultaneously
-					//printf("collision test success\n");
 					return Force((body.c - r->body[0].c).unit() * -dist - body.v * dt, vat - body.v, true);
 				}
 			}

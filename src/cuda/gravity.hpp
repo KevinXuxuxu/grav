@@ -3,7 +3,7 @@
 //  grav
 //
 //  Created by XuFangzhou on 17/3/28.
-//  Copyright © 2017年 XuFangzhou. All rights reserved.
+//  Copyright © 2017 XuFangzhou. All rights reserved.
 //
 
 #ifndef gravity_hpp
@@ -21,7 +21,6 @@ extern int n;
 extern long long T;
 const float	 dt = 0.005;
 
-// extern BodyX body[N];
 
 extern Vect* cs; //coordinates
 extern Vect* vs; //velocity
@@ -33,7 +32,6 @@ extern void input(Vect** cs, Vect** vs, float** ms, float** sizes, Vect **dv, Ve
 
 
 extern void iterate_cuda(Vect* cs, Vect* vs, float* ms, float* sizes,  Vect *dv, Vect *dx);
-//extern void iterateOcttree(BodyX *body);
 
 //#include "gravity.cpp"
 #endif /* gravity_hpp */
